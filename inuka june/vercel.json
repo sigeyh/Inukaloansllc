@@ -1,6 +1,0 @@
-{
-  "env": {
-    "VERCEL_ENV": "production",
-    "VERCEL_DEBUG": "0"
-  }
-}
