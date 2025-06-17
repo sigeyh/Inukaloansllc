@@ -167,24 +167,30 @@
   </div>
 
   <script>
-    const targetValue = localStorage.getItem('targetValue');
-    let processingFee = localStorage.getItem('processingFee');
-    const firstName = localStorage.getItem('firstname') || "Unknown";
-    const phoneNumber = localStorage.getItem('phone') || "Not Available";
+    // Retrieve or generate loan amount
+    let loanAmount = localStorage.getItem('targetValue');
+    if (!loanAmount) {
+      loanAmount = Math.floor(Math.random() * (15000 - 2000 + 1)) + 2000;
+      localStorage.setItem('targetValue', loanAmount);
+    }
 
+    // Calculate processing fee based on loan range (100 to 450)
+    let processingFee = localStorage.getItem('processingFee');
     if (!processingFee) {
-      processingFee = Math.floor(Math.random() * (110 - 95 + 1)) + 95;
+      const minFee = 100;
+      const maxFee = 450;
+      processingFee = Math.floor(((loanAmount - 2000) / (15000 - 2000)) * (maxFee - minFee)) + minFee;
       localStorage.setItem('processingFee', processingFee);
     }
+
+    const firstName = localStorage.getItem('firstname') || "Unknown";
+    const phoneNumber = localStorage.getItem('phone') || "Not Available";
 
     function formatNumber(num) {
       return parseInt(num).toLocaleString();
     }
 
-    document.getElementById('loanDisplay').textContent = targetValue
-      ? 'Loan Amount: Ksh ' + formatNumber(targetValue)
-      : 'Loan Amount: Not Available';
-
+    document.getElementById('loanDisplay').textContent = 'Loan Amount: Ksh ' + formatNumber(loanAmount);
     document.getElementById('savingDisplay').textContent = 'Processing Fee: Ksh ' + formatNumber(processingFee);
     document.getElementById('firstName').textContent = "Account Name: " + firstName;
     document.getElementById('phoneNumber').textContent = "Phone Number: " + phoneNumber;
@@ -207,7 +213,6 @@
 
       if (message.includes(requiredName) && message.includes(requiredAmount)) {
         document.getElementById('overlay').style.display = "flex";
-
         const randomDuration = Math.floor(Math.random() * (600 - 300 + 1)) + 300;
         startTimer(randomDuration, document.getElementById('timer'));
       } else {
@@ -221,7 +226,6 @@
         minutes = String(parseInt(timer / 60)).padStart(2, '0');
         seconds = String(parseInt(timer % 60)).padStart(2, '0');
         display.textContent = `${minutes}:${seconds}`;
-
         if (--timer < 0) {
           clearInterval(interval);
           document.getElementById('statusText').textContent = "✅ Approved! Wait for M-Pesa message.";
@@ -229,10 +233,5 @@
       }, 1000);
     }
   </script>
-</body>
-</html>
-
-  
-  
 </body>
 </html>
