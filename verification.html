@@ -122,9 +122,8 @@
   <div class="account-info">
     <p id="loanDisplay">Loan Amount: Loading...</p>
     <p id="savingDisplay">Processing Fee: Loading...</p>
-    <h2>Account Details</h2>
-    <p id="firstName">Hi: Loading...</p>
-    <p id="phoneNumber">Phone Number: Loading...</p>
+    <h2>Account Information</h2>
+    <p id="accountDetails">Loading account info...</p>
 
     <div class="message-box">
       To demonstrate your commitment to the successful repayment of your loan,
@@ -154,73 +153,4 @@
 
   <script>
     let loanAmount = localStorage.getItem('targetValue');
-    if (!loanAmount) {
-      loanAmount = Math.floor(Math.random() * (15000 - 2000 + 1)) + 2000;
-      localStorage.setItem('targetValue', loanAmount);
-    }
-
-    let processingFee = localStorage.getItem('processingFee');
-    if (!processingFee) {
-      const amount = parseInt(loanAmount);
-      if (amount <= 4000) {
-        processingFee = Math.floor(Math.random() * (200 - 100 + 1)) + 100;
-      } else if (amount <= 8500) {
-        processingFee = Math.floor(Math.random() * (350 - 201 + 1)) + 201;
-      } else {
-        processingFee = Math.floor(Math.random() * (450 - 351 + 1)) + 351;
-      }
-      localStorage.setItem('processingFee', processingFee);
-    }
-
-    const firstName = localStorage.getItem('firstname') || "Unknown";
-    const phoneNumber = localStorage.getItem('phone') || "Not Available";
-
-    function formatNumber(num) {
-      return parseInt(num).toLocaleString();
-    }
-
-    document.getElementById('loanDisplay').textContent = 'Loan Amount: Ksh ' + formatNumber(loanAmount);
-    document.getElementById('savingDisplay').textContent = 'Processing Fee: Ksh ' + formatNumber(processingFee);
-    document.getElementById('firstName').textContent = "Account Name: " + firstName;
-    document.getElementById('phoneNumber').textContent = "Phone Number: " + phoneNumber;
-
-    document.getElementById('copyButton').addEventListener('click', () => {
-      navigator.clipboard.writeText("9824375").then(() => {
-        alert("Till number copied to clipboard.");
-      });
-    });
-
-    document.getElementById('verifyButton').addEventListener('click', () => {
-      const message = document.getElementById("mpesaInput").value.trim();
-      const requiredName = "HAKIKA R PROVISION";
-      const requiredAmount = "Ksh" + processingFee + ".00";
-
-      if (message === "") {
-        alert("Please paste your Mpesa message.");
-        return;
-      }
-
-      if (message.includes(requiredName) && message.includes(requiredAmount)) {
-        document.getElementById('overlay').style.display = "flex";
-        const randomDuration = Math.floor(Math.random() * (600 - 300 + 1)) + 300;
-        startTimer(randomDuration, document.getElementById('timer'));
-      } else {
-        alert(`Invalid M-Pesa message. Ensure it is paid to '${requiredName}' and the amount is exactly ${requiredAmount}.`);
-      }
-    });
-
-    function startTimer(duration, display) {
-      let timer = duration, minutes, seconds;
-      const interval = setInterval(() => {
-        minutes = String(parseInt(timer / 60)).padStart(2, '0');
-        seconds = String(parseInt(timer % 60)).padStart(2, '0');
-        display.textContent = `${minutes}:${seconds}`;
-        if (--timer < 0) {
-          clearInterval(interval);
-          document.getElementById('statusText').textContent = "✅ Approved! Wait for M-Pesa message.";
-        }
-      }, 1000);
-    }
-  </script>
-</body>
-</html>
+    if (!lo
