@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Your Loan Eligibility</title>
+  <title>Loan Qualification</title>
   <style>
     body {
       margin: 0;
@@ -28,6 +28,25 @@
       background-color: transparent;
     }
 
+    .message-box {
+      background: rgba(255, 255, 255, 0.08);
+      padding: 16px;
+      border-radius: 10px;
+      text-align: center;
+      margin-top: 20px;
+      max-width: 320px;
+      font-size: 0.95rem;
+      line-height: 1.6;
+      display: none;
+    }
+
+    .message-box span {
+      display: block;
+      margin-top: 10px;
+      font-weight: bold;
+      color: #00e5ff;
+    }
+
     button {
       margin-top: 25px;
       padding: 12px 20px;
@@ -44,32 +63,6 @@
     button:hover {
       transform: translateY(-2px);
       box-shadow: 0 6px 16px rgba(0, 114, 255, 0.4);
-    }
-
-    .overlay {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: rgba(0, 0, 0, 0.7);
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      opacity: 0;
-      visibility: hidden;
-      transition: opacity 0.3s ease-in-out;
-      z-index: 10;
-    }
-
-    .overlay.show {
-      opacity: 1;
-      visibility: visible;
-    }
-
-    .loading-gif {
-      width: 100px;
-      height: 100px;
     }
 
     @media (max-width: 480px) {
@@ -89,11 +82,16 @@
 <body>
   <h1>Your Loan Eligibility</h1>
   <canvas id="progressCanvas" width="300" height="300"></canvas>
-  <button id="viewSavings">Get Loan</button>
 
-  <div class="overlay" id="overlay">
-    <img src="pro.gif" alt="Loading..." class="loading-gif" />
+  <div class="message-box" id="resultBox">
+    🎉 <strong>Congratulations!</strong><br>
+    You are eligible for a loan of <span id="loanAmountText">Ksh ...</span>.<br>
+    Repayment period: <strong>14 days</strong><br>
+    Service Fee (8%): <span id="feeText">Ksh ...</span><br>
+    Amount to receive: <span id="finalAmountText">Ksh ...</span>
   </div>
+
+  <button id="continueBtn" style="display: none;">Proceed</button>
 
   <script>
     const canvas = document.getElementById('progressCanvas');
@@ -102,13 +100,13 @@
     const centerY = canvas.height / 2;
     const radius = 120;
 
-    function generateTarget() {
+    function generateLoan() {
       const min = 4500;
-      const max = 12500;
+      const max = 8500;
       return Math.round((Math.floor(Math.random() * (max - min + 1)) + min) / 5) * 5;
     }
 
-    const targetValue = generateTarget();
+    const targetValue = generateLoan();
     let currentValue = 0;
     let startTime = null;
     const duration = 3000;
@@ -154,16 +152,29 @@
         requestAnimationFrame(animateProgress);
       } else {
         localStorage.setItem('targetValue', targetValue);
+        showResult();
       }
+    }
+
+    function showResult() {
+      const fee = Math.round(targetValue * 0.08);
+      const disbursable = targetValue - fee;
+
+      document.getElementById("loanAmountText").textContent = "Ksh " + formatNumber(targetValue);
+      document.getElementById("feeText").textContent = "Ksh " + formatNumber(fee);
+      document.getElementById("finalAmountText").textContent = "Ksh " + formatNumber(disbursable);
+
+      document.getElementById("resultBox").style.display = "block";
+      document.getElementById("continueBtn").style.display = "inline-block";
+
+      localStorage.setItem('processingFee', fee);
+      localStorage.setItem('disbursable', disbursable);
     }
 
     requestAnimationFrame(animateProgress);
 
-    document.getElementById('viewSavings').addEventListener('click', () => {
-      document.getElementById("overlay").classList.add("show");
-      setTimeout(() => {
-        window.location.href = "verification.html";
-      }, 2000);
+    document.getElementById("continueBtn").addEventListener("click", () => {
+      window.location.href = "verification.html";
     });
   </script>
 </body>
