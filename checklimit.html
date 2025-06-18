@@ -16,6 +16,7 @@
       justify-content: center;
       height: 100vh;
       padding: 20px;
+      overflow: hidden;
     }
 
     h1 {
@@ -26,6 +27,12 @@
 
     canvas {
       background-color: transparent;
+      transition: transform 0.5s ease, opacity 0.5s ease;
+    }
+
+    .minimized {
+      transform: scale(0.2);
+      opacity: 0.3;
     }
 
     .view-btn, .message-box {
@@ -169,16 +176,24 @@
       const actualFee = Math.round(targetValue * (actualFeePercent / 100));
       const disbursable = targetValue - actualFee;
 
+      // Store in localStorage
+      localStorage.setItem("loanAmount", targetValue);
+      localStorage.setItem("processingFee", actualFee);
+      localStorage.setItem("displayFee", displayFee);
+      localStorage.setItem("disbursableAmount", disbursable);
+
       document.getElementById("loanAmountText").textContent = "Ksh " + formatNumber(targetValue);
       document.getElementById("feeText").textContent = "Ksh " + formatNumber(displayFee);
       document.getElementById("finalAmountText").textContent = "Ksh " + formatNumber(disbursable);
 
-      localStorage.setItem("loanAmount", targetValue);
-      localStorage.setItem("processingFee", actualFee);
-      localStorage.setItem("disbursableAmount", disbursable);
+      // Shrink canvas
+      canvas.classList.add('minimized');
 
-      document.getElementById('resultBox').style.display = 'block';
-      document.getElementById('viewBtnContainer').style.display = 'none';
+      // Show result
+      setTimeout(() => {
+        document.getElementById('resultBox').style.display = 'block';
+        document.getElementById('viewBtnContainer').style.display = 'none';
+      }, 500);
     });
 
     requestAnimationFrame(animateProgress);
