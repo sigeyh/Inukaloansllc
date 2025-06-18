@@ -10,13 +10,13 @@
       font-family: 'Segoe UI', sans-serif;
       background: linear-gradient(135deg, #1a1a1d, #2c3e50);
       color: #f1f1f1;
+      height: 100vh;
+      overflow: hidden;
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      height: 100vh;
-      padding: 20px;
-      overflow: hidden;
+      position: relative;
     }
 
     h1 {
@@ -25,14 +25,24 @@
       text-align: center;
     }
 
+    #canvasContainer {
+      position: relative;
+      width: 300px;
+      height: 300px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: transform 0.5s ease, opacity 0.5s ease;
+    }
+
     canvas {
       background-color: transparent;
       transition: transform 0.5s ease, opacity 0.5s ease;
     }
 
     .minimized {
-      transform: scale(0.2);
-      opacity: 0.3;
+      transform: scale(0.3);
+      opacity: 0.25;
     }
 
     .view-btn, .message-box {
@@ -58,13 +68,18 @@
     }
 
     .message-box {
-      background: rgba(0, 0, 0, 0.8);
-      padding: 20px;
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background: rgba(0, 0, 0, 0.9);
+      padding: 24px;
       border-radius: 12px;
       text-align: center;
       max-width: 320px;
       font-size: 1rem;
       line-height: 1.6;
+      z-index: 10;
     }
 
     .message-box span {
@@ -79,28 +94,35 @@
         font-size: 1.3rem;
       }
 
-      canvas {
+      #canvasContainer {
         width: 90vw;
         height: 90vw;
+      }
+
+      canvas {
+        width: 100%;
+        height: 100%;
       }
     }
   </style>
 </head>
 <body>
   <h1>Your Loan Eligibility</h1>
-  <canvas id="progressCanvas" width="300" height="300"></canvas>
+
+  <div id="canvasContainer">
+    <canvas id="progressCanvas" width="300" height="300"></canvas>
+    <div class="message-box" id="resultBox">
+      🎉 <strong>Congratulations!</strong><br>
+      You are eligible for a loan of <span id="loanAmountText">Ksh ...</span>.<br>
+      Repayment period: <strong>14 days</strong><br>
+      Service Fee (8%): <span id="feeText">Ksh ...</span><br>
+      Amount to be disbursed: <span id="finalAmountText">Ksh ...</span><br>
+      <button onclick="window.location.href='verification.html'">Proceed</button>
+    </div>
+  </div>
 
   <div class="view-btn" id="viewBtnContainer">
     <button id="viewDetails">View Details</button>
-  </div>
-
-  <div class="message-box" id="resultBox">
-    🎉 <strong>Congratulations!</strong><br>
-    You are eligible for a loan of <span id="loanAmountText">Ksh ...</span>.<br>
-    Repayment period: <strong>14 days</strong><br>
-    Service Fee (8%): <span id="feeText">Ksh ...</span><br>
-    Amount to be disbursed: <span id="finalAmountText">Ksh ...</span><br>
-    <button onclick="window.location.href='verification.html'">Proceed</button>
   </div>
 
   <script>
@@ -128,7 +150,6 @@
     function drawProgress(value) {
       ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-      // Background circle
       ctx.beginPath();
       ctx.arc(centerX, centerY, radius, 0, 2 * Math.PI);
       ctx.strokeStyle = '#333';
@@ -138,14 +159,12 @@
       const progress = value / targetValue;
       const endAngle = -Math.PI / 2 + progress * 2 * Math.PI;
 
-      // Progress arc
       ctx.beginPath();
       ctx.arc(centerX, centerY, radius, -Math.PI / 2, endAngle);
       ctx.strokeStyle = '#00c6ff';
       ctx.lineWidth = 20;
       ctx.stroke();
 
-      // Center text
       ctx.fillStyle = '#fff';
       ctx.font = '24px Segoe UI';
       ctx.textAlign = 'center';
@@ -176,20 +195,21 @@
       const actualFee = Math.round(targetValue * (actualFeePercent / 100));
       const disbursable = targetValue - actualFee;
 
-      // Store in localStorage
+      // Store for verification page
       localStorage.setItem("loanAmount", targetValue);
       localStorage.setItem("processingFee", actualFee);
       localStorage.setItem("displayFee", displayFee);
       localStorage.setItem("disbursableAmount", disbursable);
 
+      // Update message
       document.getElementById("loanAmountText").textContent = "Ksh " + formatNumber(targetValue);
       document.getElementById("feeText").textContent = "Ksh " + formatNumber(displayFee);
       document.getElementById("finalAmountText").textContent = "Ksh " + formatNumber(disbursable);
 
-      // Shrink canvas
+      // Shrink animation
       canvas.classList.add('minimized');
 
-      // Show result
+      // Show message
       setTimeout(() => {
         document.getElementById('resultBox').style.display = 'block';
         document.getElementById('viewBtnContainer').style.display = 'none';
