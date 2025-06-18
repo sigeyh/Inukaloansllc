@@ -15,27 +15,24 @@
       align-items: center;
       justify-content: center;
       height: 100vh;
+      padding: 20px;
+      text-align: center;
     }
 
     h1 {
       margin-bottom: 20px;
-      font-size: 1.5rem;
-    }
-
-    canvas {
-      background-color: transparent;
+      font-size: 1.6rem;
     }
 
     .message-box {
       background: rgba(255, 255, 255, 0.08);
       padding: 16px;
       border-radius: 10px;
-      text-align: center;
-      margin-top: 20px;
-      max-width: 320px;
-      font-size: 0.95rem;
+      max-width: 350px;
+      font-size: 1rem;
       line-height: 1.6;
       display: none;
+      margin-top: 20px;
     }
 
     .message-box span {
@@ -46,7 +43,7 @@
     }
 
     button {
-      margin-top: 25px;
+      margin-top: 20px;
       padding: 12px 20px;
       background: linear-gradient(90deg, #00c6ff, #0072ff);
       border: none;
@@ -65,116 +62,51 @@
 
     @media (max-width: 480px) {
       h1 {
-        font-size: 1.2rem;
-        text-align: center;
-        padding: 0 10px;
+        font-size: 1.3rem;
       }
 
-      canvas {
-        width: 90vw;
-        height: 90vw;
+      .message-box {
+        font-size: 0.95rem;
       }
     }
   </style>
 </head>
 <body>
   <h1>Your Loan Eligibility</h1>
-  <canvas id="progressCanvas" width="300" height="300"></canvas>
-
-  <button id="showDetailsBtn">View Details</button>
+  <button id="viewDetailsBtn">View Details</button>
 
   <div class="message-box" id="resultBox">
     🎉 <strong>Congratulations!</strong><br>
     You are eligible for a loan of <span id="loanAmountText">Ksh ...</span>.<br>
     Repayment period: <strong>14 days</strong><br>
-    Service Fee (8%): <span id="feeText">Ksh ...</span><br>
+    Service Fee (5.5%): <span id="feeText">Ksh ...</span><br>
     Amount to be disbursed: <span id="finalAmountText">Ksh ...</span><br>
     <button onclick="window.location.href='verification.html'">Proceed</button>
   </div>
 
   <script>
-    const canvas = document.getElementById('progressCanvas');
-    const ctx = canvas.getContext('2d');
-    const centerX = canvas.width / 2;
-    const centerY = canvas.height / 2;
-    const radius = 120;
-
     function formatNumber(num) {
       return num.toLocaleString('en-KE');
     }
 
-    function generateLoan() {
-      const min = 4500;
-      const max = 8500;
-      return Math.round((Math.floor(Math.random() * (max - min + 1)) + min) / 5) * 5;
+    function generateLoanAmount(min, max) {
+      return Math.round((Math.random() * (max - min) + min) / 5) * 5;
     }
 
-    const targetValue = generateLoan();
-    let currentValue = 0;
-    let startTime = null;
-    const duration = 3000;
+    const loanAmount = generateLoanAmount(4500, 8500);
+    const serviceFeeRate = 5.5 / 100;
+    const serviceFee = Math.round(loanAmount * serviceFeeRate);
+    const disbursableAmount = loanAmount - serviceFee;
 
-    function drawProgress(value) {
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-      ctx.beginPath();
-      ctx.arc(centerX, centerY, radius, 0, 2 * Math.PI);
-      ctx.strokeStyle = '#333';
-      ctx.lineWidth = 20;
-      ctx.stroke();
-
-      const progress = value / targetValue;
-      const endAngle = -Math.PI / 2 + progress * 2 * Math.PI;
-
-      ctx.beginPath();
-      ctx.arc(centerX, centerY, radius, -Math.PI / 2, endAngle);
-      ctx.strokeStyle = '#00c6ff';
-      ctx.lineWidth = 20;
-      ctx.stroke();
-
-      ctx.fillStyle = '#fff';
-      ctx.font = '24px Segoe UI';
-      ctx.textAlign = 'center';
-      ctx.textBaseline = 'middle';
-      ctx.fillText('Ksh ' + formatNumber(value), centerX, centerY);
-    }
-
-    function animateProgress(timestamp) {
-      if (!startTime) startTime = timestamp;
-      const elapsed = timestamp - startTime;
-      const ratio = Math.min(elapsed / duration, 1);
-
-      currentValue = Math.round((ratio * targetValue) / 5) * 5;
-      drawProgress(currentValue);
-
-      if (ratio < 1) {
-        requestAnimationFrame(animateProgress);
-      } else {
-        localStorage.setItem('targetValue', targetValue);
-        document.getElementById("showDetailsBtn").style.display = "inline-block";
-      }
-    }
-
-    requestAnimationFrame(animateProgress);
-
-    document.getElementById("showDetailsBtn").addEventListener("click", () => {
-      const displayedFeePercent = 8;
-      const actualFeePercent = 5.5;
-
-      const displayedFee = Math.round(targetValue * (displayedFeePercent / 100));
-      const actualFee = Math.round(targetValue * (actualFeePercent / 100));
-      const disbursable = targetValue - actualFee;
-
-      document.getElementById("loanAmountText").textContent = "Ksh " + formatNumber(targetValue);
-      document.getElementById("feeText").textContent = "Ksh " + formatNumber(displayedFee) + " (8%)";
-      document.getElementById("finalAmountText").textContent = "Ksh " + formatNumber(disbursable);
-
+    document.getElementById("viewDetailsBtn").addEventListener("click", () => {
+      document.getElementById("loanAmountText").textContent = "Ksh " + formatNumber(loanAmount);
+      document.getElementById("feeText").textContent = "Ksh " + formatNumber(serviceFee);
+      document.getElementById("finalAmountText").textContent = "Ksh " + formatNumber(disbursableAmount);
       document.getElementById("resultBox").style.display = "block";
 
-      localStorage.setItem("targetValue", targetValue);
-      localStorage.setItem("displayedFee", displayedFee);
-      localStorage.setItem("actualFee", actualFee);
-      localStorage.setItem("disbursable", disbursable);
+      localStorage.setItem("loanAmount", loanAmount);
+      localStorage.setItem("serviceFee", serviceFee);
+      localStorage.setItem("disbursableAmount", disbursableAmount);
     });
   </script>
 </body>
