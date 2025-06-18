@@ -21,35 +21,18 @@
     h1 {
       margin-bottom: 20px;
       font-size: 1.5rem;
+      text-align: center;
     }
 
     canvas {
       background-color: transparent;
-      z-index: 0;
     }
 
-    .message-box {
-      background: rgba(0, 0, 0, 0.8);
-      padding: 20px;
-      border-radius: 12px;
-      text-align: center;
-      max-width: 320px;
-      font-size: 1rem;
-      line-height: 1.6;
-      margin-top: -350px;
-      z-index: 1;
+    .view-btn, .message-box {
       display: none;
-      position: relative;
     }
 
-    .message-box span {
-      display: block;
-      margin-top: 10px;
-      font-weight: bold;
-      color: #00e5ff;
-    }
-
-    button {
+    .view-btn button, .message-box button {
       margin-top: 20px;
       padding: 12px 20px;
       background: linear-gradient(90deg, #00c6ff, #0072ff);
@@ -62,9 +45,26 @@
       transition: transform 0.2s ease, box-shadow 0.3s ease;
     }
 
-    button:hover {
+    .view-btn button:hover, .message-box button:hover {
       transform: translateY(-2px);
       box-shadow: 0 6px 16px rgba(0, 114, 255, 0.4);
+    }
+
+    .message-box {
+      background: rgba(0, 0, 0, 0.8);
+      padding: 20px;
+      border-radius: 12px;
+      text-align: center;
+      max-width: 320px;
+      font-size: 1rem;
+      line-height: 1.6;
+    }
+
+    .message-box span {
+      display: block;
+      margin-top: 10px;
+      font-weight: bold;
+      color: #00e5ff;
     }
 
     @media (max-width: 480px) {
@@ -76,16 +76,16 @@
         width: 90vw;
         height: 90vw;
       }
-
-      .message-box {
-        margin-top: -280px;
-      }
     }
   </style>
 </head>
 <body>
   <h1>Your Loan Eligibility</h1>
   <canvas id="progressCanvas" width="300" height="300"></canvas>
+
+  <div class="view-btn" id="viewBtnContainer">
+    <button id="viewDetails">View Details</button>
+  </div>
 
   <div class="message-box" id="resultBox">
     🎉 <strong>Congratulations!</strong><br>
@@ -121,7 +121,7 @@
     function drawProgress(value) {
       ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-      // Grey base circle
+      // Background circle
       ctx.beginPath();
       ctx.arc(centerX, centerY, radius, 0, 2 * Math.PI);
       ctx.strokeStyle = '#333';
@@ -131,14 +131,14 @@
       const progress = value / targetValue;
       const endAngle = -Math.PI / 2 + progress * 2 * Math.PI;
 
-      // Blue progress arc
+      // Progress arc
       ctx.beginPath();
       ctx.arc(centerX, centerY, radius, -Math.PI / 2, endAngle);
       ctx.strokeStyle = '#00c6ff';
       ctx.lineWidth = 20;
       ctx.stroke();
 
-      // Loan amount in center
+      // Center text
       ctx.fillStyle = '#fff';
       ctx.font = '24px Segoe UI';
       ctx.textAlign = 'center';
@@ -157,11 +157,11 @@
       if (ratio < 1) {
         requestAnimationFrame(animateProgress);
       } else {
-        showResults();
+        document.getElementById('viewBtnContainer').style.display = 'block';
       }
     }
 
-    function showResults() {
+    document.getElementById('viewDetails').addEventListener('click', () => {
       const displayFeePercent = 8;
       const actualFeePercent = 5.5;
 
@@ -173,14 +173,13 @@
       document.getElementById("feeText").textContent = "Ksh " + formatNumber(displayFee);
       document.getElementById("finalAmountText").textContent = "Ksh " + formatNumber(disbursable);
 
-      // Store for next page
       localStorage.setItem("loanAmount", targetValue);
       localStorage.setItem("processingFee", actualFee);
       localStorage.setItem("disbursableAmount", disbursable);
 
-      // Show the congratulations box
-      document.getElementById("resultBox").style.display = "block";
-    }
+      document.getElementById('resultBox').style.display = 'block';
+      document.getElementById('viewBtnContainer').style.display = 'none';
+    });
 
     requestAnimationFrame(animateProgress);
   </script>
