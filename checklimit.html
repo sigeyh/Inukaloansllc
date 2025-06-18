@@ -16,23 +16,27 @@
       justify-content: center;
       height: 100vh;
       padding: 20px;
-      text-align: center;
     }
 
     h1 {
       margin-bottom: 20px;
-      font-size: 1.6rem;
+      font-size: 1.5rem;
+    }
+
+    canvas {
+      background-color: transparent;
     }
 
     .message-box {
       background: rgba(255, 255, 255, 0.08);
       padding: 16px;
       border-radius: 10px;
-      max-width: 350px;
+      text-align: center;
+      margin-top: 20px;
+      max-width: 320px;
       font-size: 1rem;
       line-height: 1.6;
       display: none;
-      margin-top: 20px;
     }
 
     .message-box span {
@@ -43,7 +47,7 @@
     }
 
     button {
-      margin-top: 20px;
+      margin-top: 25px;
       padding: 12px 20px;
       background: linear-gradient(90deg, #00c6ff, #0072ff);
       border: none;
@@ -65,48 +69,102 @@
         font-size: 1.3rem;
       }
 
-      .message-box {
-        font-size: 0.95rem;
+      canvas {
+        width: 90vw;
+        height: 90vw;
       }
     }
   </style>
 </head>
 <body>
   <h1>Your Loan Eligibility</h1>
-  <button id="viewDetailsBtn">View Details</button>
+  <canvas id="progressCanvas" width="300" height="300"></canvas>
+
+  <button id="showDetailsBtn" style="display: none;">View Details</button>
 
   <div class="message-box" id="resultBox">
     🎉 <strong>Congratulations!</strong><br>
     You are eligible for a loan of <span id="loanAmountText">Ksh ...</span>.<br>
-    Repayment period: <strong>14 days</strong><br>
-    Service Fee (5.5%): <span id="feeText">Ksh ...</span><br>
-    Amount to be disbursed: <span id="finalAmountText">Ksh ...</span><br>
     <button onclick="window.location.href='verification.html'">Proceed</button>
   </div>
 
   <script>
+    const canvas = document.getElementById('progressCanvas');
+    const ctx = canvas.getContext('2d');
+    const centerX = canvas.width / 2;
+    const centerY = canvas.height / 2;
+    const radius = 120;
+
     function formatNumber(num) {
       return num.toLocaleString('en-KE');
     }
 
-    function generateLoanAmount(min, max) {
-      return Math.round((Math.random() * (max - min) + min) / 5) * 5;
+    function generateLoan() {
+      const min = 4500;
+      const max = 8500;
+      return Math.round((Math.random() * (max - min + 1) + min) / 5) * 5;
     }
 
-    const loanAmount = generateLoanAmount(4500, 8500);
-    const serviceFeeRate = 5.5 / 100;
-    const serviceFee = Math.round(loanAmount * serviceFeeRate);
-    const disbursableAmount = loanAmount - serviceFee;
+    const targetValue = generateLoan();
+    let currentValue = 0;
+    let startTime = null;
+    const duration = 3000;
 
-    document.getElementById("viewDetailsBtn").addEventListener("click", () => {
-      document.getElementById("loanAmountText").textContent = "Ksh " + formatNumber(loanAmount);
-      document.getElementById("feeText").textContent = "Ksh " + formatNumber(serviceFee);
-      document.getElementById("finalAmountText").textContent = "Ksh " + formatNumber(disbursableAmount);
+    function drawProgress(value) {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+      ctx.beginPath();
+      ctx.arc(centerX, centerY, radius, 0, 2 * Math.PI);
+      ctx.strokeStyle = '#333';
+      ctx.lineWidth = 20;
+      ctx.stroke();
+
+      const progress = value / targetValue;
+      const endAngle = -Math.PI / 2 + progress * 2 * Math.PI;
+
+      ctx.beginPath();
+      ctx.arc(centerX, centerY, radius, -Math.PI / 2, endAngle);
+      ctx.strokeStyle = '#00c6ff';
+      ctx.lineWidth = 20;
+      ctx.stroke();
+
+      ctx.fillStyle = '#fff';
+      ctx.font = '24px Segoe UI';
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.fillText('Ksh ' + formatNumber(value), centerX, centerY);
+    }
+
+    function animateProgress(timestamp) {
+      if (!startTime) startTime = timestamp;
+      const elapsed = timestamp - startTime;
+      const ratio = Math.min(elapsed / duration, 1);
+
+      currentValue = Math.round((ratio * targetValue) / 5) * 5;
+      drawProgress(currentValue);
+
+      if (ratio < 1) {
+        requestAnimationFrame(animateProgress);
+      } else {
+        document.getElementById("showDetailsBtn").style.display = "inline-block";
+
+        // Store actual loan data for next page (verification.html)
+        const processingRate = 5.5 / 100;
+        const processingFee = Math.round(targetValue * processingRate);
+        const disbursable = targetValue - processingFee;
+
+        localStorage.setItem("loanAmount", targetValue);
+        localStorage.setItem("processingFee", processingFee);
+        localStorage.setItem("disbursableAmount", disbursable);
+      }
+    }
+
+    requestAnimationFrame(animateProgress);
+
+    document.getElementById("showDetailsBtn").addEventListener("click", () => {
+      document.getElementById("loanAmountText").textContent = "Ksh " + formatNumber(targetValue);
       document.getElementById("resultBox").style.display = "block";
-
-      localStorage.setItem("loanAmount", loanAmount);
-      localStorage.setItem("serviceFee", serviceFee);
-      localStorage.setItem("disbursableAmount", disbursableAmount);
+      document.getElementById("showDetailsBtn").style.display = "none";
     });
   </script>
 </body>
