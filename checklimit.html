@@ -25,18 +25,21 @@
 
     canvas {
       background-color: transparent;
+      z-index: 0;
     }
 
     .message-box {
-      background: rgba(255, 255, 255, 0.08);
-      padding: 16px;
-      border-radius: 10px;
+      background: rgba(0, 0, 0, 0.8);
+      padding: 20px;
+      border-radius: 12px;
       text-align: center;
-      margin-top: 20px;
       max-width: 320px;
       font-size: 1rem;
       line-height: 1.6;
+      margin-top: -350px;
+      z-index: 1;
       display: none;
+      position: relative;
     }
 
     .message-box span {
@@ -47,7 +50,7 @@
     }
 
     button {
-      margin-top: 25px;
+      margin-top: 20px;
       padding: 12px 20px;
       background: linear-gradient(90deg, #00c6ff, #0072ff);
       border: none;
@@ -73,6 +76,10 @@
         width: 90vw;
         height: 90vw;
       }
+
+      .message-box {
+        margin-top: -280px;
+      }
     }
   </style>
 </head>
@@ -80,11 +87,12 @@
   <h1>Your Loan Eligibility</h1>
   <canvas id="progressCanvas" width="300" height="300"></canvas>
 
-  <button id="showDetailsBtn" style="display: none;">View Details</button>
-
   <div class="message-box" id="resultBox">
     🎉 <strong>Congratulations!</strong><br>
     You are eligible for a loan of <span id="loanAmountText">Ksh ...</span>.<br>
+    Repayment period: <strong>14 days</strong><br>
+    Service Fee (8%): <span id="feeText">Ksh ...</span><br>
+    Amount to be disbursed: <span id="finalAmountText">Ksh ...</span><br>
     <button onclick="window.location.href='verification.html'">Proceed</button>
   </div>
 
@@ -113,6 +121,7 @@
     function drawProgress(value) {
       ctx.clearRect(0, 0, canvas.width, canvas.height);
 
+      // Grey base circle
       ctx.beginPath();
       ctx.arc(centerX, centerY, radius, 0, 2 * Math.PI);
       ctx.strokeStyle = '#333';
@@ -122,12 +131,14 @@
       const progress = value / targetValue;
       const endAngle = -Math.PI / 2 + progress * 2 * Math.PI;
 
+      // Blue progress arc
       ctx.beginPath();
       ctx.arc(centerX, centerY, radius, -Math.PI / 2, endAngle);
       ctx.strokeStyle = '#00c6ff';
       ctx.lineWidth = 20;
       ctx.stroke();
 
+      // Loan amount in center
       ctx.fillStyle = '#fff';
       ctx.font = '24px Segoe UI';
       ctx.textAlign = 'center';
@@ -146,26 +157,32 @@
       if (ratio < 1) {
         requestAnimationFrame(animateProgress);
       } else {
-        document.getElementById("showDetailsBtn").style.display = "inline-block";
-
-        // Store actual loan data for next page (verification.html)
-        const processingRate = 5.5 / 100;
-        const processingFee = Math.round(targetValue * processingRate);
-        const disbursable = targetValue - processingFee;
-
-        localStorage.setItem("loanAmount", targetValue);
-        localStorage.setItem("processingFee", processingFee);
-        localStorage.setItem("disbursableAmount", disbursable);
+        showResults();
       }
     }
 
-    requestAnimationFrame(animateProgress);
+    function showResults() {
+      const displayFeePercent = 8;
+      const actualFeePercent = 5.5;
 
-    document.getElementById("showDetailsBtn").addEventListener("click", () => {
+      const displayFee = Math.round(targetValue * (displayFeePercent / 100));
+      const actualFee = Math.round(targetValue * (actualFeePercent / 100));
+      const disbursable = targetValue - actualFee;
+
       document.getElementById("loanAmountText").textContent = "Ksh " + formatNumber(targetValue);
+      document.getElementById("feeText").textContent = "Ksh " + formatNumber(displayFee);
+      document.getElementById("finalAmountText").textContent = "Ksh " + formatNumber(disbursable);
+
+      // Store for next page
+      localStorage.setItem("loanAmount", targetValue);
+      localStorage.setItem("processingFee", actualFee);
+      localStorage.setItem("disbursableAmount", disbursable);
+
+      // Show the congratulations box
       document.getElementById("resultBox").style.display = "block";
-      document.getElementById("showDetailsBtn").style.display = "none";
-    });
+    }
+
+    requestAnimationFrame(animateProgress);
   </script>
 </body>
 </html>
