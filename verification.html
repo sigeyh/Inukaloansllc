@@ -3,164 +3,155 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Verify Your Details</title>
+  <title>Account Verification</title>
   <style>
     body {
       font-family: 'Segoe UI', sans-serif;
       margin: 0;
-      background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
-      color: #fff;
       padding: 20px;
+      background: linear-gradient(135deg, #ff5f6d, #ffc371);
+      color: #000;
     }
 
     .container {
       max-width: 500px;
       margin: auto;
-      background: rgba(0, 0, 0, 0.7);
-      border-radius: 12px;
-      padding: 20px;
     }
 
-    h1 {
-      text-align: center;
-      margin-bottom: 10px;
-      font-size: 1.5rem;
-    }
-
-    .trust-badge {
-      text-align: center;
-      margin-bottom: 20px;
-    }
-
-    .trust-badge img {
-      width: 100px;
-      height: auto;
-    }
-
-    .loan-info, .testimonials, .form-group, .terms {
-      margin-bottom: 20px;
-    }
-
-    .loan-info span {
-      display: block;
-      margin-top: 5px;
-      font-weight: bold;
-      color: #00e5ff;
-    }
-
-    input {
-      width: 100%;
-      padding: 10px;
-      border: none;
-      border-radius: 6px;
-      margin-top: 5px;
-      font-size: 1rem;
-    }
-
-    button {
-      width: 100%;
-      padding: 14px;
-      font-size: 1rem;
-      font-weight: bold;
+    .card {
+      background: #2c003e;
       color: #fff;
-      background: linear-gradient(90deg, #00c6ff, #0072ff);
+      border-radius: 16px;
+      padding: 20px;
+      margin-bottom: 20px;
+    }
+
+    .card h2 {
+      color: #b2ff59;
+      font-size: 1.3rem;
+      margin-bottom: 10px;
+      text-align: center;
+    }
+
+    .card p {
+      font-size: 0.95rem;
+      line-height: 1.5;
+    }
+
+    .button {
+      display: block;
+      width: 100%;
+      text-align: center;
+      background: linear-gradient(to right, #f85032, #e73827);
+      color: white;
+      padding: 12px;
+      font-weight: bold;
+      font-size: 1rem;
       border: none;
-      border-radius: 8px;
+      border-radius: 12px;
+      margin-top: 15px;
       cursor: pointer;
       transition: 0.3s;
     }
 
-    button:hover {
+    .button:hover {
       opacity: 0.9;
     }
 
-    .testimonial {
-      font-size: 0.9rem;
-      font-style: italic;
-      margin-bottom: 10px;
-      border-left: 3px solid #00e5ff;
-      padding-left: 10px;
-    }
-
-    .terms {
-      font-size: 0.8rem;
+    .change-plan {
+      background: linear-gradient(to right, #232526, #414345);
+      color: orange;
+      padding: 10px 20px;
+      border-radius: 24px;
       text-align: center;
-      opacity: 0.8;
+      margin: 0 auto 20px;
+      display: block;
+      width: fit-content;
+      font-weight: bold;
     }
 
-    @media (max-width: 480px) {
-      h1 {
-        font-size: 1.3rem;
-      }
+    .payment-box {
+      background: #f0f8ff;
+      padding: 15px;
+      border-radius: 12px;
+      font-size: 1rem;
+    }
+
+    .payment-box p {
+      margin: 10px 0;
+    }
+
+    .highlight {
+      font-weight: bold;
+      color: #000;
+    }
+
+    .copy-btn {
+      display: inline-block;
+      margin: 10px 0;
+      padding: 10px;
+      background: linear-gradient(to right, #f857a6, #ff5858);
+      color: white;
+      font-weight: bold;
+      border-radius: 10px;
+      border: none;
+      cursor: pointer;
+    }
+
+    .footer {
+      text-align: center;
+      margin-top: 30px;
+      font-size: 0.8rem;
+      color: #333;
     }
   </style>
 </head>
 <body>
   <div class="container">
-    <div class="trust-badge">
-      <img src="https://upload.wikimedia.org/wikipedia/commons/5/5a/Coat_of_arms_of_Kenya_(Official).svg" alt="CBK Badge">
-      <p style="font-size: 0.9rem; margin-top: 5px;">Licensed by Central Bank of Kenya</p>
+    <div class="card">
+      <h2>ACCOUNT SAVINGS</h2>
+      <p>
+        Based on your selected loan amount of <strong id="loanAmount">Ksh 0.00</strong>, HAKIKA R PROVISION requires you to save
+        <strong>Ksh 250.00</strong> (Selected Savings Plan) to your Hakika account.
+        This helps strengthen your credit profile. Your savings will be withdrawable exclusively
+        upon successful completion of your first loan repayment cycle.
+      </p>
     </div>
 
-    <h1>Verify Your Identity</h1>
+    <div class="change-plan">Change Savings Plan</div>
 
-    <div class="loan-info">
-      <p>You are eligible for:</p>
-      <span>Loan Amount: <span id="loanAmount">...</span></span>
-      <span>Service Fee: <span id="serviceFee">...</span></span>
-      <span>Disbursable: <span id="disbursable">...</span></span>
+    <div class="payment-box">
+      <p><strong>How to save to your Hakika A/C:</strong></p>
+      <p>Go to M~Pesa: <span class="highlight">M~pesa</span></p>
+      <p>Lipa na M~Pesa: <span class="highlight">Buy Goods & Services</span></p>
+      <p>Enter Till Number: <span class="highlight" id="tillNumber">9824375</span></p>
+
+      <button class="copy-btn" onclick="copyTill()">CLICK TO COPY TILL</button>
+
+      <p>Enter Amount: <span class="highlight">Ksh 250.00</span></p>
+      <p>Complete Payment: <span class="highlight">Enter M~Pesa Pin</span></p>
+
+      <button class="button" onclick="verifyPayment()">Verify Payment to Initiate Loan Disbursement</button>
     </div>
 
-    <div class="form-group">
-      <label for="fullName">Full Name</label>
-      <input type="text" id="fullName" placeholder="Enter your full name" required />
-
-      <label for="idNumber">ID Number</label>
-      <input type="text" id="idNumber" placeholder="Enter your National ID number" required />
-    </div>
-
-    <button onclick="submitVerification()">Submit and Proceed</button>
-
-    <div class="testimonials">
-      <p class="testimonial">"Fast and reliable. Got my loan in minutes!" - Mercy W., Nairobi</p>
-      <p class="testimonial">"I trust this app. They are transparent and professional." - James M., Kisumu</p>
-    </div>
-
-    <div class="terms">
-      By submitting, you agree to our terms. All loans are subject to approval and verification.<br>
-      <strong>Loan repayment within 14 days.</strong>
-    </div>
+    <div class="footer">© HAKIKA R PROVISION 2025</div>
   </div>
 
   <script>
-    // Retrieve stored loan info
+    // Load loan info from localStorage
     const loanAmount = localStorage.getItem("loanAmount") || "0";
-    const processingFee = localStorage.getItem("processingFee") || "0";
-    const disbursableAmount = localStorage.getItem("disbursableAmount") || "0";
+    document.getElementById("loanAmount").textContent = `Ksh ${parseInt(loanAmount).toLocaleString("en-KE")}`;
 
-    function formatNumber(num) {
-      return parseInt(num).toLocaleString('en-KE');
+    function copyTill() {
+      const till = document.getElementById("tillNumber").textContent;
+      navigator.clipboard.writeText(till).then(() => {
+        alert("Till number copied!");
+      });
     }
 
-    document.getElementById("loanAmount").textContent = "Ksh " + formatNumber(loanAmount);
-    document.getElementById("serviceFee").textContent = "Ksh " + formatNumber(processingFee);
-    document.getElementById("disbursable").textContent = "Ksh " + formatNumber(disbursableAmount);
-
-    function submitVerification() {
-      const name = document.getElementById("fullName").value.trim();
-      const id = document.getElementById("idNumber").value.trim();
-
-      if (!name || !id) {
-        alert("Please fill in your name and ID number.");
-        return;
-      }
-
-      // Save for next page or API submission
-      localStorage.setItem("userName", name);
-      localStorage.setItem("userID", id);
-
-      // Proceed (e.g., redirect to disbursement or confirmation)
-      window.location.href = "thank-you.html";
+    function verifyPayment() {
+      alert("Verifying payment... (You can add real API call here)");
+      // You can redirect or show loading animation
     }
   </script>
 </body>
