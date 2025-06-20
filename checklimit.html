@@ -27,8 +27,10 @@
 
     #canvasContainer {
       position: relative;
-      width: 500px;
-      height: 500px;
+      width: 75vw;
+      height: 75vw;
+      max-width: 500px;
+      max-height: 500px;
       display: flex;
       align-items: center;
       justify-content: center;
@@ -36,6 +38,8 @@
     }
 
     canvas {
+      width: 100%;
+      height: 100%;
       transition: transform 0.5s ease, opacity 0.25s ease;
     }
 
@@ -73,7 +77,8 @@
       padding: 24px;
       border-radius: 20px;
       text-align: center;
-      max-width: 360px;
+      width: 75vw;
+      max-width: 400px;
       font-size: 1rem;
       z-index: 20;
     }
@@ -103,36 +108,13 @@
       background-color: #e67e00;
       transform: scale(1.03);
     }
-
-    @media (max-width: 680px) {
-      #canvasContainer {
-        width: 90vw;
-        height: 90vw;
-      }
-
-      canvas {
-        width: 100%;
-        height: 100%;
-      }
-
-      .message-box {
-        max-width: 90%;
-        font-size: 1rem;
-      }
-
-      .message-box button {
-        font-size: 1rem;
-        padding: 12px 24px;
-      }
-    }
   </style>
 </head>
 <body>
-  <body class="bg-gradient-to-br from-green-900 via-green-600 to-yellow-500 min-h-screen flex flex-col items-center justify-center text-[#1e1e2f] font-['Segoe_UI'] overflow-hidden">
   <h1>Your Loan Eligibility</h1>
 
   <div id="canvasContainer">
-    <canvas id="progressCanvas" width="500" height="800"></canvas>
+    <canvas id="progressCanvas" width="300" height="300"></canvas>
     <div class="message-box" id="resultBox">
       🎉 <strong>Congratulations!</strong><br>
       You are eligible for a loan of <span id="loanAmountText">Ksh ...</span>.<br>
@@ -217,21 +199,17 @@
       const savingsFee = Math.round(targetValue * (actualFeePercent / 100));
       const disbursable = targetValue - savingsFee;
 
-      // Store for verification page
       localStorage.setItem("loanAmount", targetValue);
       localStorage.setItem("processingFee", displayFee);
       localStorage.setItem("savingsFee", savingsFee);
       localStorage.setItem("disbursableAmount", disbursable);
 
-      // Update message
       document.getElementById("loanAmountText").textContent = "Ksh " + formatNumber(targetValue);
       document.getElementById("feeText").textContent = "Ksh " + formatNumber(displayFee);
       document.getElementById("finalAmountText").textContent = "Ksh " + formatNumber(disbursable);
 
-      // Shrink animation
       canvas.classList.add('minimized');
 
-      // Show message box
       setTimeout(() => {
         document.getElementById('resultBox').style.display = 'block';
         document.getElementById('viewBtnContainer').style.display = 'none';
