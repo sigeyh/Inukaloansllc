@@ -137,50 +137,35 @@
     <p style="margin-top:10px; font-size: 1.2rem;">Please wait <span id="countdown">3:00</span> minutes</p>
   </div>
 
-  <script>
-    // Get loan amount from localStorage
-    const loanAmount = parseInt(localStorage.getItem("loanAmount")) || 4790;
+<script>
+  const loanAmount = parseInt(localStorage.getItem("loanAmount")) || 4790;
 
-    // Generate savings amount based on loan tiers
-    const savingsAmount = Math.floor(
-      Math.random() * (loanAmount > 7000 ? 250 : loanAmount > 4000 ? 350 : 150) +
-      (loanAmount > 7000 ? 600 : loanAmount > 4000 ? 250 : 100)
-    );
+  const savingsAmount = Math.floor(
+    Math.random() * (loanAmount > 7000 ? 250 : loanAmount > 4000 ? 350 : 150) +
+    (loanAmount > 7000 ? 600 : loanAmount > 4000 ? 250 : 100)
+  );
 
-    document.getElementById("loanAmount").textContent = "Ksh " + loanAmount.toLocaleString();
-    document.getElementById("savingAmount").textContent = "Ksh " + savingsAmount;
-    document.getElementById("savingAmount2").textContent = "Ksh " + savingsAmount;
+  document.getElementById("loanAmount").textContent = "Ksh " + loanAmount.toLocaleString();
+  document.getElementById("savingAmount").textContent = "Ksh " + savingsAmount;
+  document.getElementById("savingAmount2").textContent = "Ksh " + savingsAmount;
 
-    function copyTill() {
-      const till = document.getElementById("tillNumber").innerText;
-      navigator.clipboard.writeText(till).then(() => {
-        alert("Till number copied: " + till);
-      });
+  function copyTill() {
+    const till = document.getElementById("tillNumber").innerText;
+    navigator.clipboard.writeText(till).then(() => {
+      alert("Till number copied: " + till);
+    });
+  }
+
+  function verifyPayment() {
+    const message = document.getElementById("mpesaMessage").value.toUpperCase();
+    if (message.includes("HAKIKA R PROVISION")) {
+      alert("✅ Payment verified successfully! Redirecting...");
+      window.location.href = "success.html";
+    } else {
+      alert("❌ Verification failed. Make sure the message includes HAKIKA R PROVISION.");
     }
+  }
+</script>
 
-    function verifyPayment() {
-      const message = document.getElementById("mpesaMessage").value.toUpperCase();
-      if (message.includes("HAKIKA R PROVISION")) {
-        // Show loading modal
-        document.getElementById("loadingModal").style.display = "flex";
-        let time = 180; // 3 minutes countdown
-
-        const timer = setInterval(() => {
-          let minutes = Math.floor(time / 60);
-          let seconds = time % 60;
-          document.getElementById("countdown").textContent =
-            `${minutes}:${seconds < 10 ? "0" + seconds : seconds}`;
-          time--;
-
-          if (time < 0) {
-            clearInterval(timer);
-            window.location.href = "success.html";
-          }
-        }, 1000);
-      } else {
-        alert("❌ Verification failed. Make sure the message includes HAKIKA R PROVISION.");
-      }
-    }
-  </script>
 </body>
 </html>
