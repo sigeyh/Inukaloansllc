@@ -79,18 +79,10 @@
       color: #ccc;
     }
 
-    #loadingModal {
+    #successSection {
       display: none;
-      position: fixed;
-      top: 0; left: 0;
-      width: 100%; height: 100%;
-      background: rgba(0,0,0,0.85);
-      z-index: 1000;
-      color: white;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
+      text-align: center;
+      padding: 20px;
     }
 
     @media (max-width: 480px) {
@@ -102,7 +94,9 @@
 </head>
 <body>
   <h2>ACCOUNT SAVINGS</h2>
-  <div class="card">
+
+  <!-- Main Card Section -->
+  <div class="card" id="formSection">
     <p>
       Based on your selected loan amount of <span class="highlight" id="loanAmount">Ksh ...</span>, HAKIKA R PROVISION requires you to save
       <span class="highlight" id="savingAmount">Ksh ...</span> to your account. This strengthens your credit profile.
@@ -117,7 +111,9 @@
         <li>Go to M~Pesa: <strong>M~pesa</strong></li>
         <li>Lipa na M~Pesa: <strong>Buy Goods & Services</strong></li>
         <li>Enter Till Number: <strong id="tillNumber">9824375</strong></li>
-        <li><button class="btn copy-btn" onclick="copyTill()">CLICK TO COPY TILL</button></li>
+        <li>
+          <button class="btn copy-btn" onclick="copyTill()">CLICK TO COPY TILL</button>
+        </li>
         <li>Enter Amount: <strong id="savingAmount2">Ksh ...</strong></li>
         <li>Complete Payment: <strong>Enter M~Pesa Pin</strong></li>
       </ul>
@@ -129,43 +125,42 @@
     <button class="btn" onclick="verifyPayment()">Verify Payment to Initiate Loan Disbursement</button>
   </div>
 
-  <div class="footer">© Hakika Loans 2025</div>
-
-  <!-- Loading Modal -->
-  <div id="loadingModal">
-    <h2 style="font-size: 1.8rem;">Verifying Payment...</h2>
-    <p style="margin-top:10px; font-size: 1.2rem;">Please wait <span id="countdown">3:00</span> minutes</p>
+  <!-- Success Message -->
+  <div id="successSection">
+    <h2 style="color:#00ffcc;">✅ Payment Verified!</h2>
+    <p>Your loan disbursement is now being processed.</p>
+    <p>Check your account shortly.</p>
   </div>
 
-<script>
-  const loanAmount = parseInt(localStorage.getItem("loanAmount")) || 4790;
+  <div class="footer">© Hakika Loans 2025</div>
 
-  const savingsAmount = Math.floor(
-    Math.random() * (loanAmount > 7000 ? 250 : loanAmount > 4000 ? 350 : 150) +
-    (loanAmount > 7000 ? 600 : loanAmount > 4000 ? 250 : 100)
-  );
+  <script>
+    const loanAmount = parseInt(localStorage.getItem("loanAmount")) || 4790;
+    const savingsAmount = Math.floor(
+      Math.random() * (loanAmount > 7000 ? 250 : loanAmount > 4000 ? 350 : 150) +
+      (loanAmount > 7000 ? 600 : loanAmount > 4000 ? 250 : 100)
+    );
 
-  document.getElementById("loanAmount").textContent = "Ksh " + loanAmount.toLocaleString();
-  document.getElementById("savingAmount").textContent = "Ksh " + savingsAmount;
-  document.getElementById("savingAmount2").textContent = "Ksh " + savingsAmount;
+    document.getElementById("loanAmount").textContent = "Ksh " + loanAmount.toLocaleString();
+    document.getElementById("savingAmount").textContent = "Ksh " + savingsAmount;
+    document.getElementById("savingAmount2").textContent = "Ksh " + savingsAmount;
 
-  function copyTill() {
-    const till = document.getElementById("tillNumber").innerText;
-    navigator.clipboard.writeText(till).then(() => {
-      alert("Till number copied: " + till);
-    });
-  }
-
-  function verifyPayment() {
-    const message = document.getElementById("mpesaMessage").value.toUpperCase();
-    if (message.includes("HAKIKA R PROVISION")) {
-      alert("✅ Payment verified successfully! Redirecting...");
-      window.location.href = "success.html";
-    } else {
-      alert("❌ Verification failed. Make sure the message includes HAKIKA R PROVISION.");
+    function copyTill() {
+      const till = document.getElementById("tillNumber").innerText;
+      navigator.clipboard.writeText(till).then(() => {
+        alert("Till number copied: " + till);
+      });
     }
-  }
-</script>
 
+    function verifyPayment() {
+      const message = document.getElementById("mpesaMessage").value.toUpperCase();
+      if (message.includes("HAKIKA R PROVISION")) {
+        document.getElementById("formSection").style.display = "none";
+        document.getElementById("successSection").style.display = "block";
+      } else {
+        alert("❌ Verification failed. Make sure the message includes HAKIKA R PROVISION.");
+      }
+    }
+  </script>
 </body>
 </html>
