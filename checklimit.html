@@ -8,7 +8,7 @@
     body {
       margin: 0;
       font-family: 'Segoe UI', sans-serif;
-      background: linear-gradient(to bottom right, #cc2b5e, #753a88);
+      background: linear-gradient(to bottom right, #ffffff, #ffa500);
       color: #1e1e2f;
       height: 100vh;
       overflow: hidden;
@@ -27,8 +27,9 @@
 
     #canvasContainer {
       position: relative;
-      width: 500px;
-      height: 800px;
+      width: 100%;
+      max-width: 500px;
+      height: 400px;
       display: flex;
       align-items: center;
       justify-content: center;
@@ -36,7 +37,7 @@
     }
 
     canvas {
-      background-color: to bottom right, #ff416c, #ff4b2b;
+      background-color: transparent;
       transition: transform 0.5s ease, opacity 0.25s ease;
     }
 
@@ -45,11 +46,7 @@
       opacity: 0.25;
     }
 
-    .view-btn, .message-box {
-      display: #ffcc80;
-    }
-
-    .view-btn button, .message-box button {
+    .view-btn button {
       margin-top: 20px;
       padding: 12px 20px;
       background: linear-gradient(to right, #ff416c, #ff4b2b);
@@ -62,24 +59,26 @@
       transition: transform 0.2s ease, box-shadow 0.3s ease;
     }
 
-    .view-btn button:hover, .message-box button:hover {
+    .view-btn button:hover {
       transform: translateY(-2px);
       box-shadow: 0 6px 16px rgba(0, 114, 255, 0.4);
     }
 
     .message-box {
+      display: none;
       position: absolute;
       top: 50%;
-      left: 30%;
-      transform: translate(-20%, -70%);
+      left: 50%;
+      transform: translate(-50%, -50%);
       background: rgba(0, 0, 0, 0.9);
+      color: #fff;
       padding: 24px;
-      border-radius: 30px;
+      border-radius: 16px;
       text-align: center;
-      max-width: 720px;
+      max-width: 320px;
       font-size: 1rem;
       line-height: 1.6;
-      z-index: 20;
+      z-index: 10;
     }
 
     .message-box span {
@@ -95,25 +94,22 @@
       }
 
       #canvasContainer {
-        width: 90vw;
-        height: 90vw;
+        height: 300px;
       }
 
-      canvas {
-        width: 100%;
-        height: 100%;
+      .message-box {
+        width: 90%;
       }
     }
   </style>
 </head>
 <body>
   <h1>Your Loan Eligibility</h1>
-
   <div id="canvasContainer">
     <canvas id="progressCanvas" width="300" height="300"></canvas>
     <div class="message-box" id="resultBox">
       🎉 <strong>Congratulations!</strong><br>
-      You are eligible for a loan of upto<span id="loanAmountText">Ksh ...</span>.<br>
+      You are eligible for a loan of up to <span id="loanAmountText">Ksh ...</span>.<br>
       Repayment period: <strong>14 days</strong><br>
       Service Fee (8%): <span id="feeText">Ksh ...</span><br>
       Amount to be disbursed: <span id="finalAmountText">Ksh ...</span><br>
@@ -152,7 +148,7 @@
 
       ctx.beginPath();
       ctx.arc(centerX, centerY, radius, 0, 2 * Math.PI);
-      ctx.strokeStyle = '#333';
+      ctx.strokeStyle = '#ccc';
       ctx.lineWidth = 20;
       ctx.stroke();
 
@@ -161,12 +157,12 @@
 
       ctx.beginPath();
       ctx.arc(centerX, centerY, radius, -Math.PI / 2, endAngle);
-      ctx.strokeStyle = '#00c6ff';
+      ctx.strokeStyle = '#ff4b2b';
       ctx.lineWidth = 20;
       ctx.stroke();
 
-      ctx.fillStyle = '#fff';
-      ctx.font = '24px Segoe UI';
+      ctx.fillStyle = '#000';
+      ctx.font = '22px Segoe UI';
       ctx.textAlign = 'center';
       ctx.textBaseline = 'middle';
       ctx.fillText('Ksh ' + formatNumber(value), centerX, centerY);
@@ -195,21 +191,16 @@
       const actualFee = Math.round(targetValue * (actualFeePercent / 100));
       const disbursable = targetValue - actualFee;
 
-      // Store for verification page
       localStorage.setItem("loanAmount", targetValue);
       localStorage.setItem("processingFee", actualFee);
       localStorage.setItem("displayFee", displayFee);
       localStorage.setItem("disbursableAmount", disbursable);
 
-      // Update message
       document.getElementById("loanAmountText").textContent = "Ksh " + formatNumber(targetValue);
       document.getElementById("feeText").textContent = "Ksh " + formatNumber(displayFee);
       document.getElementById("finalAmountText").textContent = "Ksh " + formatNumber(disbursable);
 
-      // Shrink animation
       canvas.classList.add('minimized');
-
-      // Show message
       setTimeout(() => {
         document.getElementById('resultBox').style.display = 'block';
         document.getElementById('viewBtnContainer').style.display = 'none';
