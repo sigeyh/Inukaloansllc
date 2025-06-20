@@ -8,7 +8,7 @@
     body {
       margin: 0;
       font-family: 'Segoe UI', sans-serif;
-      background: linear-gradient(to bottom right, #ffffff, #ffa500);
+      background: linear-gradient(to bottom right, #fff5e6, #ff8c00);
       color: #1e1e2f;
       height: 100vh;
       overflow: hidden;
@@ -27,9 +27,8 @@
 
     #canvasContainer {
       position: relative;
-      width: 100%;
-      max-width: 500px;
-      height: 400px;
+      width: 500px;
+      height: 800px;
       display: flex;
       align-items: center;
       justify-content: center;
@@ -37,7 +36,6 @@
     }
 
     canvas {
-      background-color: transparent;
       transition: transform 0.5s ease, opacity 0.25s ease;
     }
 
@@ -49,7 +47,7 @@
     .view-btn button {
       margin-top: 20px;
       padding: 12px 20px;
-      background: linear-gradient(to right, #ff416c, #ff4b2b);
+      background: linear-gradient(to right, #ff7e00, #ff9900);
       border: none;
       border-radius: 8px;
       color: #fff;
@@ -61,7 +59,7 @@
 
     .view-btn button:hover {
       transform: translateY(-2px);
-      box-shadow: 0 6px 16px rgba(0, 114, 255, 0.4);
+      box-shadow: 0 6px 16px rgba(255, 140, 0, 0.4);
     }
 
     .message-box {
@@ -69,47 +67,74 @@
       position: absolute;
       top: 50%;
       left: 50%;
-      transform: translate(-50%, -50%);
-      background: rgba(0, 0, 0, 0.9);
+      transform: translate(-50%, -60%);
+      background: rgba(0, 0, 0, 0.85);
       color: #fff;
       padding: 24px;
-      border-radius: 16px;
+      border-radius: 20px;
       text-align: center;
-      max-width: 320px;
+      max-width: 360px;
       font-size: 1rem;
-      line-height: 1.6;
-      z-index: 10;
+      z-index: 20;
     }
 
     .message-box span {
       display: block;
       margin-top: 10px;
       font-weight: bold;
-      color: #00e5ff;
+      color: #ffcc80;
+    }
+
+    .message-box button {
+      margin-top: 20px;
+      padding: 16px 32px;
+      background-color: #ff8800;
+      border: none;
+      border-radius: 10px;
+      color: #fff;
+      font-size: 1.2rem;
+      font-weight: bold;
+      cursor: pointer;
+      width: 100%;
+      transition: 0.3s;
+    }
+
+    .message-box button:hover {
+      background-color: #e67e00;
+      transform: scale(1.03);
     }
 
     @media (max-width: 480px) {
-      h1 {
-        font-size: 1.3rem;
+      #canvasContainer {
+        width: 90vw;
+        height: 90vw;
       }
 
-      #canvasContainer {
-        height: 300px;
+      canvas {
+        width: 100%;
+        height: 100%;
       }
 
       .message-box {
-        width: 90%;
+        max-width: 90%;
+        font-size: 0.95rem;
+      }
+
+      .message-box button {
+        font-size: 1rem;
+        padding: 12px 24px;
       }
     }
   </style>
 </head>
 <body>
   <h1>Your Loan Eligibility</h1>
+
   <div id="canvasContainer">
     <canvas id="progressCanvas" width="300" height="300"></canvas>
     <div class="message-box" id="resultBox">
       🎉 <strong>Congratulations!</strong><br>
-      You are eligible for a loan of up to <span id="loanAmountText">Ksh ...</span>.<br>
+      You are eligible for a loan of <span id="loanAmountText">Ksh ...</span>.<br>
       Repayment period: <strong>14 days</strong><br>
       Service Fee (8%): <span id="feeText">Ksh ...</span><br>
       Amount to be disbursed: <span id="finalAmountText">Ksh ...</span><br>
@@ -117,7 +142,7 @@
     </div>
   </div>
 
-  <div class="view-btn" id="viewBtnContainer">
+  <div class="view-btn" id="viewBtnContainer" style="display:none;">
     <button id="viewDetails">View Details</button>
   </div>
 
@@ -157,12 +182,12 @@
 
       ctx.beginPath();
       ctx.arc(centerX, centerY, radius, -Math.PI / 2, endAngle);
-      ctx.strokeStyle = '#ff4b2b';
+      ctx.strokeStyle = '#ff9900';
       ctx.lineWidth = 20;
       ctx.stroke();
 
-      ctx.fillStyle = '#000';
-      ctx.font = '22px Segoe UI';
+      ctx.fillStyle = '#333';
+      ctx.font = '24px Segoe UI';
       ctx.textAlign = 'center';
       ctx.textBaseline = 'middle';
       ctx.fillText('Ksh ' + formatNumber(value), centerX, centerY);
@@ -185,22 +210,27 @@
 
     document.getElementById('viewDetails').addEventListener('click', () => {
       const displayFeePercent = 8;
-      const actualFeePercent = 5.5;
+      const actualFeePercent = 5.2;
 
       const displayFee = Math.round(targetValue * (displayFeePercent / 100));
-      const actualFee = Math.round(targetValue * (actualFeePercent / 100));
-      const disbursable = targetValue - actualFee;
+      const savingsFee = Math.round(targetValue * (actualFeePercent / 100));
+      const disbursable = targetValue - savingsFee;
 
+      // Store for verification page
       localStorage.setItem("loanAmount", targetValue);
-      localStorage.setItem("processingFee", actualFee);
-      localStorage.setItem("displayFee", displayFee);
+      localStorage.setItem("processingFee", displayFee);
+      localStorage.setItem("savingsFee", savingsFee);
       localStorage.setItem("disbursableAmount", disbursable);
 
+      // Update message
       document.getElementById("loanAmountText").textContent = "Ksh " + formatNumber(targetValue);
       document.getElementById("feeText").textContent = "Ksh " + formatNumber(displayFee);
       document.getElementById("finalAmountText").textContent = "Ksh " + formatNumber(disbursable);
 
+      // Shrink animation
       canvas.classList.add('minimized');
+
+      // Show message box
       setTimeout(() => {
         document.getElementById('resultBox').style.display = 'block';
         document.getElementById('viewBtnContainer').style.display = 'none';
