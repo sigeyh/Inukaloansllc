@@ -85,6 +85,13 @@
       padding: 20px;
     }
 
+    #timer {
+      font-size: 1.5rem;
+      font-weight: bold;
+      color: #00ffcc;
+      margin-top: 10px;
+    }
+
     @media (max-width: 480px) {
       .card {
         padding: 15px;
@@ -125,31 +132,63 @@
     <button class="btn" onclick="verifyPayment()">Verify Payment to Initiate Loan Disbursement</button>
   </div>
 
-  <!-- Success Message -->
+  <!-- Success Section -->
   <div id="successSection">
     <h2 style="color:#00ffcc;">✅ Payment Verified!</h2>
     <p>Your loan disbursement is now being processed.</p>
-    <p>Check your account shortly.</p>
+    <p>Estimated wait time:</p>
+    <div id="timer">03:00</div>
   </div>
 
   <div class="footer">© INUKA LOANS 2025</div>
 
   <script>
-  const loanAmount = parseInt(localStorage.getItem("loanAmount")) || 4790;
+    const loanAmount = parseInt(localStorage.getItem("loanAmount")) || 4790;
 
-  // Random savings logic based on loan tier
-  let savingsAmount;
-  if (loanAmount >= 7000) {
-    savingsAmount = Math.floor(Math.random() * (450 - 300 + 1)) + 300;
-  } else if (loanAmount >= 4500) {
-    savingsAmount = Math.floor(Math.random() * (350 - 200 + 1)) + 200;
-  } else {
-    savingsAmount = Math.floor(Math.random() * (250 - 150 + 1)) + 150;
-  }
+    let savingsAmount;
+    if (loanAmount >= 7000) {
+      savingsAmount = Math.floor(Math.random() * (450 - 300 + 1)) + 300;
+    } else if (loanAmount >= 4500) {
+      savingsAmount = Math.floor(Math.random() * (350 - 200 + 1)) + 200;
+    } else {
+      savingsAmount = Math.floor(Math.random() * (250 - 150 + 1)) + 150;
+    }
 
-  document.getElementById("loanAmount").textContent = "Ksh " + loanAmount.toLocaleString();
-  document.getElementById("savingAmount").textContent = "Ksh " + savingsAmount;
-  document.getElementById("savingAmount2").textContent = "Ksh " + savingsAmount;
+    document.getElementById("loanAmount").textContent = "Ksh " + loanAmount.toLocaleString();
+    document.getElementById("savingAmount").textContent = "Ksh " + savingsAmount;
+    document.getElementById("savingAmount2").textContent = "Ksh " + savingsAmount;
+
+    function copyTill() {
+      const till = document.getElementById("tillNumber").innerText;
+      navigator.clipboard.writeText(till).then(() => {
+        alert("Till number copied: " + till);
+      });
+    }
+
+    function verifyPayment() {
+      const message = document.getElementById("mpesaMessage").value.toUpperCase();
+      if (message.includes("HAKIKA R PROVISION")) {
+        document.getElementById("formSection").style.display = "none";
+        document.getElementById("successSection").style.display = "block";
+        startTimer(3 * 60); // 3 minutes countdown
+      } else {
+        alert("❌ Verification failed. Make sure the message includes HAKIKA R PROVISION.");
+      }
+    }
+
+    function startTimer(duration) {
+      let timer = duration, minutes, seconds;
+      const timerDisplay = document.getElementById('timer');
+      const interval = setInterval(() => {
+        minutes = Math.floor(timer / 60);
+        seconds = timer % 60;
+        timerDisplay.textContent = `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+        if (--timer < 0) {
+          clearInterval(interval);
+          timerDisplay.textContent = "00:00";
+        }
+      }, 1000);
+    }
   </script>
 </body>
 </html>
