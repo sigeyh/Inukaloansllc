@@ -7,59 +7,62 @@
   <style>
     body {
       font-family: 'Segoe UI', sans-serif;
-      background: linear-gradient(to bottom right, #cc2b5e, #753a88);
+      background: linear-gradient(to bottom right, #0f2027, #203a43, #2c5364);
       margin: 0;
       padding: 20px;
-      color: #fff;
+      color: #ffffff;
       display: flex;
       flex-direction: column;
       align-items: center;
     }
 
     .card {
-      background-color: #1e1e2f;
-      border-radius: 12px;
-      padding: 20px;
-      max-width: 400px;
+      background-color: #262f3d;
+      border-radius: 14px;
+      padding: 25px;
+      max-width: 420px;
       width: 100%;
       margin-top: 20px;
-      box-shadow: 0 10px 20px rgba(0,0,0,0.3);
+      box-shadow: 0 12px 24px rgba(0,0,0,0.4);
     }
 
     h2 {
-      color: #aaff00;
+      color: #00ffd5;
       text-align: center;
     }
 
     p, li {
       line-height: 1.6;
+      font-size: 1rem;
     }
 
     .highlight {
       font-weight: bold;
-      color: #ffd700;
+      color: #f8c630;
     }
 
     .btn {
-      background: linear-gradient(to right, #ff416c, #ff4b2b);
+      background: linear-gradient(to right, #00c6ff, #0072ff);
       color: white;
       padding: 12px 20px;
       border: none;
-      border-radius: 8px;
+      border-radius: 10px;
       cursor: pointer;
       font-weight: bold;
       font-size: 1rem;
       margin-top: 20px;
       width: 100%;
+      transition: 0.3s ease;
     }
 
     .btn:hover {
-      background: linear-gradient(to right, #ff4b2b, #ff416c);
+      background: linear-gradient(to right, #0072ff, #00c6ff);
     }
 
     .copy-btn {
-      margin-top: 10px;
-      background: linear-gradient(to right, #ff9966, #ff5e62);
+      margin-top: 12px;
+      background: linear-gradient(to right, #f7971e, #ffd200);
+      color: #000;
     }
 
     textarea {
@@ -69,7 +72,8 @@
       border-radius: 8px;
       border: none;
       padding: 10px;
-      font-size: 0.95rem;
+      font-size: 1rem;
+      resize: none;
     }
 
     .footer {
@@ -94,7 +98,7 @@
 
     @media (max-width: 480px) {
       .card {
-        padding: 15px;
+        padding: 18px;
       }
     }
   </style>
@@ -113,10 +117,10 @@
 
     <button class="btn" onclick="window.location.href='checklimit.html'">Change Loan Amount</button>
 
-    <div style="background:#e8f0fa; color:#000; border-radius:12px; padding:15px; margin-top:20px;">
+    <div style="background:#f0f8ff; color:#000; border-radius:12px; padding:15px; margin-top:20px;">
       <p><strong>How to pay your processing fee via M-Pesa:</strong></p>
       <ul style="list-style:none; padding-left:0;">
-        <li>Go to M~Pesa: <strong>M~Pesa</strong></li>
+        <li>Go to M-Pesa: <strong>M~Pesa</strong></li>
         <li>Lipa na M~Pesa: <strong>Buy Goods & Services</strong></li>
         <li>Enter Till Number: <strong id="tillNumber">9824375</strong></li>
         <li><button class="btn copy-btn" onclick="copyTill()">COPY TILL NUMBER</button></li>
@@ -134,16 +138,15 @@
   <div id="successSection">
     <h2 style="color:#00ffcc;">✅ Payment Verified!</h2>
     <p>Your loan disbursement is being processed.</p>
-    <p>Estimated time:</p>
+    <p>Estimated wait time:</p>
     <div id="timer">03:00</div>
   </div>
 
-  <div class="footer">© Inuka Loans - 2025</div>
+  <div class="footer">© HAKIKA R PROVISION - 2025</div>
 
   <script>
     const loanAmount = parseInt(localStorage.getItem("loanAmount")) || 4790;
-
-    const processingFee = Math.floor(Math.random() * (250 - 150 + 1)) + 150;
+    const processingFee = Math.floor(Math.random() * (150 - 95 + 1)) + 95;
 
     document.getElementById("loanAmount").textContent = "Ksh " + loanAmount.toLocaleString();
     document.getElementById("savingAmount").textContent = "Ksh " + processingFee;
